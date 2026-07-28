@@ -1,0 +1,24 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+
+development:
+  <<: *default
+  database: syrian_marketplace_development
+  username: postgres
+  password: postgres
+  host: localhost
+
+test:
+  <<: *default
+  database: syrian_marketplace_test
+  username: postgres
+  password: postgres
+  host: localhost
+
+production:
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
+  database: syrian_marketplace_production

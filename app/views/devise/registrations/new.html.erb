@@ -1,0 +1,280 @@
+<h2 class="text-center mb-4">تسجيل حساب جديد</h2>
+
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+
+        <!-- Display all error messages -->
+        <% if resource.errors.any? %>
+          <div class="alert alert-danger">
+            <h5 class="alert-heading">حدثت أخطاء:</h5>
+            <ul class="mb-0">
+              <% resource.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <!-- Specific username error message -->
+        <% if resource.errors[:username].any? %>
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle ms-2"></i>
+            <strong>اسم المستخدم غير متاح:</strong> الرجاء اختيار اسم مستخدم آخر.
+          </div>
+        <% end %>
+
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+
+          <!-- Email Field -->
+          <div class="mb-3">
+            <%= f.label :email, 'البريد الإلكتروني', class: 'form-label fw-bold' %>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+              <%= f.email_field :email, class: "form-control #{'is-invalid' if resource.errors[:email].any?}",
+                  autofocus: true, placeholder: 'example@domain.com', required: true %>
+            </div>
+            <% if resource.errors[:email].any? %>
+              <div class="invalid-feedback d-block">
+                <%= resource.errors[:email].join(', ') %>
+              </div>
+            <% end %>
+          </div>
+
+          <!-- Username Field with uniqueness check -->
+          <div class="mb-3">
+            <%= f.label :username, 'اسم المستخدم', class: 'form-label fw-bold' %>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-user"></i></span>
+              <%= f.text_field :username, class: "form-control #{'is-invalid' if resource.errors[:username].any?}",
+                  placeholder: 'اختر اسماً مميزاً', required: true %>
+            </div>
+            <% if resource.errors[:username].any? %>
+              <div class="invalid-feedback d-block">
+                <% if resource.errors[:username].include?("has already been taken") %>
+                  <i class="fas fa-times-circle text-danger"></i>
+                  اسم المستخدم "<strong><%= resource.username %></strong>" مستخدم بالفعل. الرجاء اختيار اسم آخر.
+                <% else %>
+                  <%= resource.errors[:username].join(', ') %>
+                <% end %>
+              </div>
+            <% else %>
+              <small class="text-muted">
+                <i class="fas fa-info-circle"></i>
+                يجب أن يكون فريداً (3-50 حرف، يمكن استخدام أحرف وأرقام)
+              </small>
+            <% end %>
+
+            <!-- Live username availability check (optional) -->
+            <div id="username-availability" class="mt-1 small" style="display: none;"></div>
+          </div>
+
+          <!-- Phone Field -->
+          <div class="mb-3">
+            <%= f.label :phone, 'رقم الهاتف', class: 'form-label fw-bold' %>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-phone"></i></span>
+              <%= f.telephone_field :phone, class: "form-control #{'is-invalid' if resource.errors[:phone].any?}",
+                  placeholder: '09xxxxxxxx' %>
+            </div>
+            <% if resource.errors[:phone].any? %>
+              <div class="invalid-feedback d-block">
+                <%= resource.errors[:phone].join(', ') %>
+              </div>
+            <% end %>
+          </div>
+
+          <!-- Account Type Selection -->
+          <div class="mb-4">
+            <label class="form-label fw-bold">نوع الحساب</label>
+            <div class="card bg-light p-3">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-check mb-2">
+                    <%= radio_button_tag 'user[company]', 'true', false,
+                        class: 'form-check-input', id: 'user_company_true' %>
+                    <%= label_tag 'user_company_true', 'شركة / مؤسسة', class: 'form-check-label fw-bold' %>
+                    <small class="d-block text-muted">يمكنك نشر وظائف وإعلانات الشركات</small>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check mb-2">
+                    <%= radio_button_tag 'user[company]', 'false', true,
+                        class: 'form-check-input', id: 'user_company_false' %>
+                    <%= label_tag 'user_company_false', 'فرد', class: 'form-check-label fw-bold' %>
+                    <small class="d-block text-muted">يمكنك شراء وبيع المنتجات</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mt-2">
+                <div class="col-md-6">
+                  <div class="form-check">
+                    <%= check_box_tag 'user[jobseeker]', 'true', false,
+                        class: 'form-check-input', id: 'user_jobseeker' %>
+                    <%= label_tag 'user_jobseeker', 'باحث عن عمل', class: 'form-check-label' %>
+                    <small class="d-block text-muted">أنشئ ملفك الشخصي وابحث عن وظائف</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Password Field -->
+          <div class="mb-3">
+            <%= f.label :password, 'كلمة المرور', class: 'form-label fw-bold' %>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-lock"></i></span>
+              <%= f.password_field :password, class: "form-control #{'is-invalid' if resource.errors[:password].any?}",
+                  placeholder: '●●●●●●●●' %>
+            </div>
+            <% if resource.errors[:password].any? %>
+              <div class="invalid-feedback d-block">
+                <%= resource.errors[:password].join(', ') %>
+              </div>
+            <% else %>
+              <small class="text-muted">الحد الأدنى 6 أحرف</small>
+            <% end %>
+          </div>
+
+          <!-- Password Confirmation Field -->
+          <div class="mb-3">
+            <%= f.label :password_confirmation, 'تأكيد كلمة المرور', class: 'form-label fw-bold' %>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-lock"></i></span>
+              <%= f.password_field :password_confirmation, class: "form-control #{'is-invalid' if resource.errors[:password_confirmation].any?}",
+                  placeholder: '●●●●●●●●' %>
+            </div>
+            <% if resource.errors[:password_confirmation].any? %>
+              <div class="invalid-feedback d-block">
+                <%= resource.errors[:password_confirmation].join(', ') %>
+              </div>
+            <% end %>
+          </div>
+
+          <!-- Terms and Conditions -->
+          <div class="mb-4 form-check">
+            <input type="checkbox" class="form-check-input" id="terms" required>
+            <label class="form-check-label" for="terms">
+              أوافق على <a href="/terms" target="_blank">الشروط والأحكام</a> و
+              <a href="/privacy" target="_blank">سياسة الخصوصية</a>
+            </label>
+          </div>
+
+          <!-- Submit Button -->
+          <%= f.submit 'تسجيل حساب جديد', class: 'btn btn-success w-100 py-2 fw-bold' %>
+        <% end %>
+
+        <!-- Links -->
+        <div class="mt-4 text-center">
+          <p class="mb-1">لديك حساب بالفعل؟
+            <%= link_to 'تسجيل الدخول', new_user_session_path, class: 'text-primary' %>
+          </p>
+          <%= link_to 'العودة للرئيسية', root_path, class: 'text-muted small' %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript for username availability check (optional) -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const companyRadio = document.getElementById('user_company_true');
+    const individualRadio = document.getElementById('user_company_false');
+    const jobseekerCheckbox = document.getElementById('user_jobseeker');
+
+    // If company is selected, disable jobseeker (companies are not job seekers)
+    if (companyRadio && individualRadio && jobseekerCheckbox) {
+      companyRadio.addEventListener('change', function() {
+        if (this.checked) {
+          jobseekerCheckbox.checked = false;
+          jobseekerCheckbox.disabled = true;
+        }
+      });
+
+      individualRadio.addEventListener('change', function() {
+        if (this.checked) {
+          jobseekerCheckbox.disabled = false;
+        }
+      });
+    }
+
+    // Optional: Live username availability check
+    const usernameField = document.getElementById('user_username');
+    const availabilityDiv = document.getElementById('username-availability');
+
+    if (usernameField && availabilityDiv) {
+      let timeoutId;
+
+      usernameField.addEventListener('input', function() {
+        clearTimeout(timeoutId);
+        const username = this.value.trim();
+
+        if (username.length < 3) {
+          availabilityDiv.style.display = 'none';
+          return;
+        }
+
+        timeoutId = setTimeout(function() {
+          // You would need to create an endpoint for this
+          // fetch(`/check_username?username=${username}`)
+          //   .then(response => response.json())
+          //   .then(data => {
+          //     if (data.available) {
+          //       availabilityDiv.innerHTML = '<span class="text-success"><i class="fas fa-check"></i> اسم المستخدم متاح</span>';
+          //       availabilityDiv.className = 'mt-1 small text-success';
+          //     } else {
+          //       availabilityDiv.innerHTML = '<span class="text-danger"><i class="fas fa-times"></i> اسم المستخدم غير متاح</span>';
+          //       availabilityDiv.className = 'mt-1 small text-danger';
+          //     }
+          //     availabilityDiv.style.display = 'block';
+          //   });
+        }, 500);
+      });
+    }
+  });
+</script>
+
+<style>
+/* Additional styling for better UX */
+.card {
+  border: none;
+  border-radius: 15px;
+}
+
+.input-group-text {
+  background-color: #f8f9fa;
+  border-left: none;
+}
+
+.form-control {
+  border-right: none;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: #ced4da;
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #2E5C3E, #8B5A2B);
+  border: none;
+  transition: all 0.3s;
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(46, 92, 62, 0.3);
+}
+
+.is-invalid {
+  border-color: #dc3545;
+}
+
+.invalid-feedback {
+  color: #dc3545;
+  font-size: 0.8rem;
+}
+</style>

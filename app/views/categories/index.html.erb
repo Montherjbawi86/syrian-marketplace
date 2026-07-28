@@ -1,0 +1,32 @@
+<div class="container py-5">
+  <div class="text-center mb-5">
+    <h1 class="display-4 fw-bold mb-3">التصنيفات الرئيسية</h1>
+    <p class="lead text-muted">تصفح الأقسام المختلفة واختر ما يناسبك</p>
+  </div>
+  <div class="row g-4">
+    <% @categories.each do |category| %>
+      <div class="col-md-6 col-lg-4 col-xl-3">
+        <%= link_to category_path(category), class: "text-decoration-none" do %>
+          <div class="card category-card h-100 shadow-sm border-0 text-center">
+            <div class="card-body p-4">
+              <div class="category-icon-wrapper mb-3">
+                <i class="fas <%= category.icon %> fa-4x "style="color: #006400;"></i>
+              </div>
+              <h4 class="card-title mb-2"><%= category.name_ar %></h4>
+              <p class="card-text text-muted">
+                <i class="fas fa-folder-tree me-1 "></i>
+                <%= category.subcategories.count %> تصنيف فرعي
+              </p>
+              <div class="mt-3">
+                <span class="badge rounded-pill px-3 py-2" style="background: var(--gradient-flag); color: white;">
+                  <i class="fas fa-tag me-1"></i>
+                  <%= category.listings.count %> إعلان
+                </span>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

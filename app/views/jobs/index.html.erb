@@ -1,0 +1,620 @@
+<%# app/views/jobs/index.html.erb %>
+<%# Jobs page with filters for city, category, subcategory, and search %>
+<%# Uses @job_listings (Listing.jobs.active), @categories, @subcategories from JobsController %>
+
+<style>
+/* ===== Jobs Index Page Styles - Green Theme ===== */
+:root {
+  --primary: #2E5C3E;
+  --primary-dark: #1e4030;
+  --primary-light: #e8f3ec;
+  --secondary: #f59e0b;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --transition: all 0.2s ease;
+}
+
+/* Filters card */
+.filters-section .card {
+  border-radius: 1rem;
+  background: white;
+  transition: var(--transition);
+}
+.filters-section .card:hover {
+  box-shadow: var(--shadow-md);
+}
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--gray-700);
+}
+.form-select, .form-control {
+  border-radius: 0.75rem;
+  border: 1px solid var(--gray-200);
+  padding: 0.6rem 1rem;
+  font-size: 0.875rem;
+  transition: var(--transition);
+}
+.form-select:focus, .form-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(46, 92, 62, 0.1);
+}
+.input-group-text {
+  border-radius: 0.75rem 0 0 0.75rem;
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-right: none;
+}
+.form-control.border-start-0 {
+  border-left: none;
+}
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  border-radius: 0.75rem;
+  padding: 0.6rem 1.2rem;
+  font-weight: 500;
+  transition: var(--transition);
+}
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+  transform: translateY(-1px);
+}
+.btn-outline-secondary {
+  border-radius: 2rem;
+  padding: 0.4rem 1rem;
+  font-size: 0.875rem;
+}
+
+/* Active filters */
+.alert-light {
+  background-color: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: 2rem;
+  font-size: 0.875rem;
+}
+.badge.bg-light {
+  background-color: white !important;
+  border: 1px solid var(--gray-200);
+  color: var(--gray-700);
+  font-weight: normal;
+  padding: 0.4rem 0.8rem;
+  border-radius: 2rem;
+}
+
+/* Results summary */
+.d-flex .text-muted {
+  font-size: 0.9rem;
+}
+.btn-primary i {
+  margin-right: 0.25rem;
+}
+
+/* Job Cards */
+.job-card {
+  transition: var(--transition);
+  border-radius: 1rem;
+  overflow: hidden;
+  background: white;
+}
+.job-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+.job-card .card-title a {
+  font-weight: 700;
+  font-size: 1.1rem;
+  line-height: 1.4;
+  transition: color 0.2s;
+}
+.job-card .card-title a:hover {
+  color: var(--primary) !important;
+}
+.badge.bg-info {
+  background-color: var(--primary-light) !important;
+  color: var(--primary-dark);
+  font-weight: 500;
+  font-size: 0.7rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 2rem;
+}
+.card-text {
+  color: var(--gray-600);
+  line-height: 1.5;
+}
+.text-success {
+  color: #10b981 !important;
+  font-weight: 700;
+}
+.btn-outline-primary {
+  border-radius: 2rem;
+  border-color: var(--primary);
+  color: var(--primary);
+  padding: 0.3rem 1rem;
+  font-size: 0.8rem;
+  transition: var(--transition);
+}
+.btn-outline-primary:hover {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+/* Additional job meta icons */
+.job-meta-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.7rem;
+  color: var(--gray-600);
+}
+.job-meta-icons i {
+  width: 1rem;
+  color: var(--primary);
+}
+
+/* Deadline badge */
+.deadline-badge {
+  background-color: #fee2e2;
+  color: #dc2626;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 2rem;
+}
+.deadline-badge.soon {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+.deadline-badge.normal {
+  background-color: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+/* Fade-up animation */
+.fade-up {
+  animation: fadeUp 0.4s ease-out;
+}
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Enhanced Pagination (Green Theme, RTL) ===== */
+.pagination-wrapper {
+  margin-top: 2rem;
+  padding: 1rem 0;
+}
+.pagination {
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 0;
+}
+.page-item {
+  list-style: none;
+}
+.page-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 0.75rem;
+  border-radius: 0.75rem !important;
+  border: 1px solid var(--gray-200);
+  background-color: white;
+  color: var(--gray-700);
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: var(--transition);
+  text-decoration: none;
+}
+.page-item.active .page-link {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: white;
+  box-shadow: 0 2px 6px rgba(46, 92, 62, 0.2);
+}
+.page-link:hover:not(.disabled) {
+  background-color: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary-dark);
+  transform: translateY(-1px);
+}
+.page-link.disabled,
+.page-item.disabled .page-link {
+  background-color: var(--gray-100);
+  border-color: var(--gray-200);
+  color: var(--gray-400);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Responsive pagination for mobile */
+@media (max-width: 576px) {
+  .pagination {
+    gap: 0.25rem;
+  }
+  .page-link {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 0.5rem;
+    font-size: 0.75rem;
+  }
+  .page-item:first-child .page-link span,
+  .page-item:nth-child(2) .page-link span,
+  .page-item:nth-last-child(2) .page-link span,
+  .page-item:last-child .page-link span {
+    display: none;
+  }
+  .page-item:first-child .page-link:before {
+    content: "\f100";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    display: inline-block;
+  }
+  .page-item:nth-child(2) .page-link:before {
+    content: "\f104";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+  }
+  .page-item:nth-last-child(2) .page-link:before {
+    content: "\f105";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+  }
+  .page-item:last-child .page-link:before {
+    content: "\f101";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+  }
+}
+
+/* How to Apply Section */
+.how-to-apply {
+  background: var(--gray-50);
+  border-radius: 2rem;
+  padding: 2rem 1.5rem;
+  margin-top: 3rem;
+}
+.section-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.5rem;
+}
+.section-title:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 50%;
+  transform: translateX(50%);
+  width: 60px;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 3px;
+}
+.step-card {
+  background: white;
+  border-radius: 1.5rem;
+  transition: var(--transition);
+  height: 100%;
+}
+.step-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+.step-number {
+  width: 36px;
+  height: 36px;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  font-weight: bold;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.5rem;
+}
+.step-icon {
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+}
+.step-card h5 {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+/* No results */
+.text-center.py-5 i {
+  opacity: 0.5;
+}
+.text-center .lead {
+  font-size: 1.2rem;
+  color: var(--gray-600);
+}
+
+/* RTL spacing */
+[dir="rtl"] .me-1 {
+  margin-right: 0 !important;
+  margin-left: 0.25rem;
+}
+[dir="rtl"] .ms-2 {
+  margin-left: 0 !important;
+  margin-right: 0.5rem;
+}
+</style>
+
+<!-- Filters Section -->
+<div class="filters-section mb-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+      <%= form_tag jobs_path, method: :get, class: 'row g-3 align-items-end', local: true do %>
+        <!-- Search field -->
+        <div class="col-md-12 mb-3">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0">
+              <i class="fas fa-search" style="color: #2E5C3E;"></i>
+            </span>
+            <%= text_field_tag :search, params[:search],
+                placeholder: 'ابحث عن وظيفة... (عنوان، وصف)',
+                class: 'form-control border-start-0' %>
+            <button class="btn btn-primary" type="submit">
+              <i class="fas fa-search"></i> بحث
+            </button>
+          </div>
+        </div>
+
+        <!-- City filter -->
+        <div class="col-md-4">
+          <label class="form-label fw-semibold"><i class="fas fa-map-marker-alt me-1"></i> المدينة</label>
+          <%= select_tag :city_id,
+              options_from_collection_for_select(City.active.order(:name_ar), :id, :name_ar, params[:city_id]),
+              prompt: 'جميع المدن',
+              class: 'form-select',
+              onchange: 'this.form.submit();' %>
+        </div>
+
+        <!-- Category filter -->
+        <div class="col-md-4">
+          <label class="form-label fw-semibold"><i class="fas fa-folder me-1"></i> التصنيف الرئيسي</label>
+          <%= select_tag :category_id,
+              options_from_collection_for_select(@categories, :id, :name_ar, params[:category_id]),
+              prompt: 'جميع التصنيفات',
+              class: 'form-select',
+              onchange: 'this.form.submit();' %>
+        </div>
+
+        <!-- Subcategory filter -->
+        <div class="col-md-4">
+          <label class="form-label fw-semibold"><i class="fas fa-tag me-1"></i> التخصص</label>
+          <%= select_tag :subcategory_id,
+              options_from_collection_for_select(@subcategories, :id, :name_ar, params[:subcategory_id]),
+              prompt: 'جميع التخصصات',
+              class: 'form-select',
+              onchange: 'this.form.submit();' %>
+        </div>
+
+        <%= hidden_field_tag :search, params[:search] %>
+      <% end %>
+
+      <!-- Reset filters -->
+      <% if params[:city_id].present? || params[:category_id].present? || params[:subcategory_id].present? || params[:search].present? %>
+        <div class="mt-3 text-end">
+          <%= link_to jobs_path, class: 'btn btn-sm btn-outline-secondary' do %>
+            <i class="fas fa-times"></i> مسح جميع الفلاتر
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Active filters display -->
+<% active_filters = [] %>
+<% active_filters << "البحث: #{params[:search]}" if params[:search].present? %>
+<% if params[:city_id].present? && (@selected_city = City.find_by(id: params[:city_id])) %>
+  <% active_filters << "المدينة: #{@selected_city.name_ar}" %>
+<% end %>
+<% if params[:category_id].present? && (@selected_category = @categories.find { |c| c.id == params[:category_id].to_i }) %>
+  <% active_filters << "التصنيف: #{@selected_category.name_ar}" %>
+<% end %>
+<% if params[:subcategory_id].present? && (@selected_subcategory = Subcategory.find_by(id: params[:subcategory_id])) %>
+  <% active_filters << "التخصص: #{@selected_subcategory.name_ar}" %>
+<% end %>
+<% if active_filters.any? %>
+  <div class="alert alert-light border mt-3 p-2 d-flex flex-wrap gap-2">
+    <span class="text-muted small me-2">الفلاتر النشطة:</span>
+    <% active_filters.each do |filter| %>
+      <span class="badge bg-light text-dark border"><%= filter %></span>
+    <% end %>
+  </div>
+<% end %>
+
+<!-- Results summary & new job button -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <p class="text-muted mb-0">
+    <i class="fas fa-list me-1"></i> عرض <strong><%= @job_listings.total_count %></strong> وظيفة
+  </p>
+  <% if user_signed_in? && current_user.company? %>
+    <%= link_to new_job_path, class: 'btn btn-primary' do %>
+      <i class="fas fa-plus-circle me-1"></i> نشر وظيفة جديدة
+    <% end %>
+  <% end %>
+</div>
+
+<!-- Job cards grid -->
+<div class="row g-4">
+  <% if @job_listings.present? %>
+    <% @job_listings.each do |job| %>
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0 job-card fade-up">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h5 class="card-title mb-0">
+                <%= link_to job.title_ar.presence || job.title, job_path(job), class: 'text-decoration-none text-dark' %>
+              </h5>
+              <span class="badge bg-info">
+                <%= t("job_type.#{job.job_type}", default: job.job_type&.humanize || 'غير محدد') %>
+              </span>
+            </div>
+
+            <p class="text-muted small mb-2">
+              <i class="fas fa-building me-1"></i> <%= job.user&.name %>
+              <i class="fas fa-map-marker-alt ms-2 me-1"></i> <%= job.city&.name_ar || 'غير محدد' %>
+            </p>
+
+            <div class="job-meta-icons mb-2">
+              <% if job.experience_level.present? %>
+                <span><i class="fas fa-chart-line"></i> <%= t("experience_level.#{job.experience_level}", default: job.experience_level.humanize) %></span>
+              <% end %>
+              <% if job.skills.present? %>
+                <span><i class="fas fa-code"></i> <%= job.skills.split(',').count %> مهارة</span>
+              <% end %>
+              <% if job.deadline.present? %>
+                <% days_left = (job.deadline - Date.today).to_i %>
+                <span class="deadline-badge <%= 'soon' if days_left <= 3 && days_left >= 0 %> <%= 'normal' if days_left > 3 %>">
+                  <i class="far fa-calendar-alt"></i>
+                  <% if days_left < 0 %>
+                    انتهت
+                  <% elsif days_left == 0 %>
+                    آخر اليوم
+                  <% else %>
+                    متبقي <%= days_left %> يوم
+                  <% end %>
+                </span>
+              <% end %>
+            </div>
+
+            <p class="card-text small text-secondary mb-3">
+              <%= truncate(strip_tags(job.description_ar.presence || job.description), length: 90) %>
+            </p>
+
+            <div class="d-flex justify-content-between align-items-center mt-auto">
+              <span class="text-success fw-bold">
+                <%= job.formatted_price %>
+              </span>
+              <%= link_to 'تفاصيل', job_path(job), class: 'btn btn-sm btn-outline-primary rounded-pill' %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="col-12 text-center py-5">
+      <i class="fas fa-briefcase fa-4x text-muted mb-3"></i>
+      <p class="lead">لا توجد وظائف تطابق معايير البحث</p>
+    </div>
+  <% end %>
+</div>
+
+<!-- Enhanced Pagination -->
+<div class="pagination-wrapper">
+  <nav aria-label="التنقل بين صفحات الوظائف">
+    <ul class="pagination justify-content-center">
+      <%# First page link %>
+      <li class="page-item <%= 'disabled' if @job_listings.current_page == 1 %>">
+        <% if @job_listings.current_page == 1 %>
+          <span class="page-link disabled"><span>الأولى</span></span>
+        <% else %>
+          <%= link_to url_for(page: 1), class: 'page-link' do %>
+            <span>الأولى</span>
+          <% end %>
+        <% end %>
+      </li>
+
+      <%# Previous page link %>
+      <li class="page-item <%= 'disabled' unless @job_listings.prev_page %>">
+        <% if @job_listings.prev_page %>
+          <%= link_to url_for(page: @job_listings.prev_page), class: 'page-link' do %>
+            <span>السابقة</span>
+          <% end %>
+        <% else %>
+          <span class="page-link disabled"><span>السابقة</span></span>
+        <% end %>
+      </li>
+
+      <%# Dynamic page numbers (show up to 5 pages around current) %>
+      <% start_page = [@job_listings.current_page - 2, 1].max %>
+      <% end_page = [start_page + 4, @job_listings.total_pages].min %>
+      <% start_page = [end_page - 4, 1].max if end_page - start_page < 4 %>
+
+      <% (start_page..end_page).each do |page_num| %>
+        <li class="page-item <%= 'active' if page_num == @job_listings.current_page %>">
+          <%= link_to page_num, url_for(page: page_num), class: 'page-link' %>
+        </li>
+      <% end %>
+
+      <%# Next page link %>
+      <li class="page-item <%= 'disabled' unless @job_listings.next_page %>">
+        <% if @job_listings.next_page %>
+          <%= link_to url_for(page: @job_listings.next_page), class: 'page-link' do %>
+            <span>التالية</span>
+          <% end %>
+        <% else %>
+          <span class="page-link disabled"><span>التالية</span></span>
+        <% end %>
+      </li>
+
+      <%# Last page link %>
+      <li class="page-item <%= 'disabled' if @job_listings.current_page == @job_listings.total_pages %>">
+        <% if @job_listings.current_page == @job_listings.total_pages %>
+          <span class="page-link disabled"><span>الأخيرة</span></span>
+        <% else %>
+          <%= link_to url_for(page: @job_listings.total_pages), class: 'page-link' do %>
+            <span>الأخيرة</span>
+          <% end %>
+        <% end %>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<!-- How to Apply Section -->
+<div class="how-to-apply mt-5">
+  <h2 class="section-title text-center mb-4">كيف تتقدم لوظيفة؟</h2>
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="step-card text-center p-4">
+        <div class="step-number mb-2">1</div>
+        <i class="fas fa-search step-icon fa-2x text-primary mb-2"></i>
+        <h5>ابحث عن وظيفة</h5>
+        <p class="text-muted">تصفح الوظائف المتاحة في مجالك</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="step-card text-center p-4">
+        <div class="step-number mb-2">2</div>
+        <i class="fas fa-file-alt step-icon fa-2x text-primary mb-2"></i>
+        <h5>قدم طلبك</h5>
+        <p class="text-muted">استخدم نموذج التقديم المخصص</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="step-card text-center p-4">
+        <div class="step-number mb-2">3</div>
+        <i class="fab fa-whatsapp step-icon fa-2x text-primary mb-2"></i>
+        <h5>تواصل مع صاحب العمل</h5>
+        <p class="text-muted">بعد التقديم، تواصل عبر واتساب</p>
+      </div>
+    </div>
+  </div>
+</div>

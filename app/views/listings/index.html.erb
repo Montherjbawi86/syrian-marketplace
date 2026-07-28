@@ -1,0 +1,542 @@
+<%# app/views/listings/index.html.erb %>
+<%# Redesigned with green theme, grid/list toggle, and images restored %>
+
+<style>
+  /* ===== Listings Index - Green Theme ===== */
+  :root {
+    --primary: #2E5C3E;
+    --primary-dark: #1e4030;
+    --primary-light: #e8f3ec;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --transition: all 0.2s ease;
+  }
+
+  /* Header */
+  .listings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+  }
+  .listings-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 0;
+  }
+  .btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    border-radius: 2rem;
+    padding: 0.5rem 1.2rem;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+  .btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-1px);
+  }
+
+  /* Results bar */
+  .results-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .results-count {
+    background: var(--gray-100);
+    padding: 0.4rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    color: var(--gray-700);
+  }
+  .results-count span {
+    font-weight: 700;
+    color: var(--primary);
+  }
+  .view-toggle {
+    display: flex;
+    gap: 0.5rem;
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 2rem;
+    padding: 0.25rem;
+  }
+  .view-toggle-btn {
+    background: transparent;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--gray-600);
+    font-size: 1rem;
+  }
+  .view-toggle-btn.active {
+    background: var(--primary);
+    color: white;
+  }
+  .view-toggle-btn:hover:not(.active) {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+  }
+
+  /* Grid View Cards */
+  .listing-card {
+    transition: var(--transition);
+    border-radius: 1rem;
+    overflow: hidden;
+    background: white;
+    height: 100%;
+  }
+  .listing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+  .listing-card-image {
+    overflow: hidden;
+    border-radius: 1rem 1rem 0 0;
+  }
+  .listing-card-image img {
+    transition: transform 0.3s ease;
+  }
+  .listing-card:hover .listing-card-image img {
+    transform: scale(1.05);
+  }
+  .listing-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: color 0.2s;
+  }
+  .listing-title a:hover {
+    color: var(--primary) !important;
+  }
+  .badge.bg-info {
+    background-color: var(--primary-light) !important;
+    color: var(--primary-dark);
+    font-weight: 500;
+    font-size: 0.7rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 2rem;
+  }
+  .listing-meta-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.7rem;
+    color: var(--gray-600);
+  }
+  .listing-meta-icons i {
+    width: 1rem;
+    color: var(--primary);
+  }
+  .deadline-badge {
+    background-color: #fee2e2;
+    color: #dc2626;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 2rem;
+  }
+  .deadline-badge.soon {
+    background-color: #fef3c7;
+    color: #d97706;
+  }
+  .deadline-badge.normal {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+  }
+  .text-success {
+    color: #10b981 !important;
+    font-weight: 700;
+  }
+  .btn-outline-primary {
+    border-radius: 2rem;
+    border-color: var(--primary);
+    color: var(--primary);
+    padding: 0.3rem 1rem;
+    font-size: 0.8rem;
+    transition: var(--transition);
+  }
+  .btn-outline-primary:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+  }
+
+  /* List View */
+  .list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .listing-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    text-decoration: none;
+    transition: var(--transition);
+    border: 1px solid var(--gray-200);
+  }
+  .listing-item:hover {
+    transform: translateX(4px);
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md);
+  }
+  .listing-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 0.75rem;
+    background: var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .listing-info {
+    flex: 1;
+  }
+  .listing-info .listing-title {
+    font-size: 1rem;
+    margin: 0 0 0.25rem;
+    color: var(--gray-800);
+  }
+  .listing-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--gray-600);
+  }
+  .listing-meta i {
+    margin-left: 0.25rem;
+    color: var(--primary);
+  }
+  .listing-price {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 1.1rem;
+    white-space: nowrap;
+  }
+
+  /* Pagination */
+  .pagination-wrapper {
+    margin-top: 2rem;
+    padding: 1rem 0;
+  }
+  .pagination {
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 0;
+  }
+  .page-item {
+    list-style: none;
+  }
+  .page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 0.75rem;
+    border-radius: 0.75rem !important;
+    border: 1px solid var(--gray-200);
+    background-color: white;
+    color: var(--gray-700);
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: var(--transition);
+    text-decoration: none;
+  }
+  .page-item.active .page-link {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    box-shadow: 0 2px 6px rgba(46, 92, 62, 0.2);
+  }
+  .page-link:hover:not(.disabled) {
+    background-color: var(--primary-light);
+    border-color: var(--primary);
+    color: var(--primary-dark);
+    transform: translateY(-1px);
+  }
+  .page-link.disabled,
+  .page-item.disabled .page-link {
+    background-color: var(--gray-100);
+    border-color: var(--gray-200);
+    color: #9ca3af;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: 1rem;
+    border: 1px solid var(--gray-200);
+  }
+  .empty-icon {
+    font-size: 4rem;
+    color: var(--primary-light);
+    margin-bottom: 1rem;
+  }
+  .empty-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 0.5rem;
+  }
+  .empty-text {
+    color: var(--gray-600);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .listings-header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .listing-item {
+      flex-wrap: wrap;
+    }
+    .listing-price {
+      width: 100%;
+      text-align: left;
+    }
+    .page-link {
+      min-width: 34px;
+      height: 34px;
+      padding: 0 0.5rem;
+      font-size: 0.75rem;
+    }
+  }
+
+  /* Animation */
+  .fade-up {
+    animation: fadeUp 0.4s ease-out;
+  }
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<!-- Header -->
+<div class="listings-header">
+  <h1 class="listings-title"><%= @title || 'جميع الإعلانات' %></h1>
+  <% if user_signed_in? %>
+    <%= link_to new_listing_path, class: 'btn btn-primary add-listing-btn' do %>
+      <i class="fas fa-plus"></i> إعلان جديد
+    <% end %>
+  <% end %>
+</div>
+
+<!-- Results count & view toggle -->
+<div class="results-bar">
+  <div class="results-count">
+    <span><%= @listings.total_count %></span> إعلان
+  </div>
+  <div class="view-toggle">
+    <button class="view-toggle-btn active" id="gridViewBtn" aria-label="عرض شبكي">
+      <i class="fas fa-th"></i>
+    </button>
+    <button class="view-toggle-btn" id="listViewBtn" aria-label="عرض قائمة">
+      <i class="fas fa-list"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Grid View Container -->
+<div id="gridViewContainer">
+  <% if @listings.present? %>
+    <div class="row g-4">
+      <% @listings.each do |listing| %>
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100 shadow-sm border-0 listing-card fade-up">
+            <!-- Image Section -->
+            <div class="listing-card-image">
+              <% if listing.images.attached? && listing.images.any? %>
+                <%= image_tag listing.images.first, class: 'card-img-top', style: 'height: 180px; width: 100%; object-fit: cover;' %>
+              <% else %>
+                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
+                  <i class="fas fa-image fa-3x text-muted"></i>
+                </div>
+              <% end %>
+            </div>
+
+            <div class="card-body">
+              <!-- Title & Type Badge -->
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="card-title mb-0">
+                  <%= link_to listing.title_ar.presence || listing.title, listing_path(listing), class: 'text-decoration-none text-dark listing-title' %>
+                </h5>
+                <span class="badge bg-info">
+                  <i class="fas <%= listing.listing_type == 'job' ? 'fa-briefcase' : 'fa-tag' %> me-1"></i>
+                  <%= listing.listing_type_display %>
+                </span>
+              </div>
+
+              <!-- User/Company & Location -->
+              <p class="text-muted small mb-2">
+                <i class="fas fa-user me-1"></i> <%= listing.user&.name %>
+                <i class="fas fa-map-marker-alt ms-2 me-1"></i> <%= listing.city&.name_ar || 'غير محدد' %>
+              </p>
+
+              <!-- Extra meta (skills, deadline, condition) -->
+              <div class="listing-meta-icons mb-2">
+                <% if listing.listing_type == 'job' %>
+                  <% if listing.experience_level.present? %>
+                    <span><i class="fas fa-chart-line"></i> <%= listing.experience_level.humanize %></span>
+                  <% end %>
+                  <% if listing.skills.present? %>
+                    <span><i class="fas fa-code"></i> <%= listing.skills.split(',').count %> مهارة</span>
+                  <% end %>
+                  <% if listing.deadline.present? %>
+                    <% days_left = (listing.deadline - Date.today).to_i %>
+                    <span class="deadline-badge <%= 'soon' if days_left <= 3 && days_left >= 0 %> <%= 'normal' if days_left > 3 %>">
+                      <i class="far fa-calendar-alt"></i>
+                      <% if days_left < 0 %>انتهت<% elsif days_left == 0 %>آخر اليوم<% else %>متبقي <%= days_left %> يوم<% end %>
+                    </span>
+                  <% end %>
+                <% else %>
+                  <% if listing.condition.present? %>
+                    <span><i class="fas fa-info-circle"></i> <%= listing.condition.humanize %></span>
+                  <% end %>
+                <% end %>
+              </div>
+
+              <!-- Short description -->
+              <p class="card-text small text-secondary mb-3">
+                <%= truncate(strip_tags(listing.description_ar.presence || listing.description), length: 90) %>
+              </p>
+
+              <!-- Price & Details button -->
+              <div class="d-flex justify-content-between align-items-center mt-auto">
+                <span class="text-success fw-bold">
+                  <%= listing.formatted_price %>
+                </span>
+                <%= link_to 'تفاصيل', listing_path(listing), class: 'btn btn-sm btn-outline-primary rounded-pill' %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="pagination-wrapper">
+      <%= paginate @listings %>
+    </div>
+  <% else %>
+    <div class="empty-state">
+      <div class="empty-state-content">
+        <i class="fas fa-box-open empty-icon"></i>
+        <h3 class="empty-title">لا توجد إعلانات</h3>
+        <p class="empty-text">كن أول من يضيف إعلان!</p>
+        <% if user_signed_in? %>
+          <%= link_to new_listing_path, class: 'btn btn-primary' do %>
+            <i class="fas fa-plus"></i> أضف إعلان
+          <% end %>
+        <% else %>
+          <%= link_to new_user_session_path, class: 'btn btn-primary' do %>
+            <i class="fas fa-sign-in-alt"></i> سجل دخول
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<!-- List View Container (hidden by default) -->
+<div id="listViewContainer" style="display: none;">
+  <% if @listings.present? %>
+    <div class="list-view">
+      <% @listings.each do |listing| %>
+        <%= link_to listing_path(listing), class: 'listing-item' do %>
+          <div class="listing-image">
+            <% if listing.images.attached? && listing.images.any? %>
+              <%= image_tag listing.images.first, class: 'listing-image' %>
+            <% else %>
+              <i class="fas fa-image fa-2x text-muted"></i>
+            <% end %>
+          </div>
+          <div class="listing-info">
+            <h6 class="listing-title"><%= listing.title_ar.presence || listing.title %></h6>
+            <div class="listing-meta">
+              <span><i class="fas fa-map-marker-alt"></i> <%= listing.city&.name_ar || 'غير محدد' %></span>
+              <span><i class="far fa-clock"></i> <%= time_ago_in_words(listing.created_at) %></span>
+            </div>
+          </div>
+          <span class="listing-price"><%= listing.formatted_price %></span>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div class="pagination-wrapper">
+      <%= paginate @listings %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const gridBtn = document.getElementById('gridViewBtn');
+    const listBtn = document.getElementById('listViewBtn');
+    const gridContainer = document.getElementById('gridViewContainer');
+    const listContainer = document.getElementById('listViewContainer');
+
+    function setView(view) {
+      if (view === 'grid') {
+        gridContainer.style.display = 'block';
+        listContainer.style.display = 'none';
+        gridBtn.classList.add('active');
+        listBtn.classList.remove('active');
+        localStorage.setItem('listingsView', 'grid');
+      } else {
+        gridContainer.style.display = 'none';
+        listContainer.style.display = 'block';
+        listBtn.classList.add('active');
+        gridBtn.classList.remove('active');
+        localStorage.setItem('listingsView', 'list');
+      }
+    }
+
+    const savedView = localStorage.getItem('listingsView');
+    if (savedView === 'list') {
+      setView('list');
+    } else {
+      setView('grid');
+    }
+
+    gridBtn.addEventListener('click', () => setView('grid'));
+    listBtn.addEventListener('click', () => setView('list'));
+  });
+</script>

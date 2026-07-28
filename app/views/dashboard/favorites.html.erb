@@ -1,0 +1,20 @@
+<h1 class="mb-4">المفضلة</h1>
+
+<% if @favorites.present? %>
+  <div class="row g-4">
+    <%= render partial: 'listings/listing_card', collection: @favorites.map(&:listing), as: :listing %>
+  </div>
+
+  <div class="pagination-wrapper mt-4">
+    <%= paginate @favorites %>
+  </div>
+<% else %>
+  <div class="empty-state text-center py-5">
+    <i class="fas fa-heart fa-4x text-muted mb-3"></i>
+    <h3 class="text-muted">لا توجد إعلانات في المفضلة</h3>
+    <p class="text-muted mb-4">قم بإضافة إعلانات إلى المفضلة لتظهر هنا</p>
+    <%= link_to listings_path, class: 'btn btn-primary' do %>
+      <i class="fas fa-search"></i> تصفح الإعلانات
+    <% end %>
+  </div>
+<% end %>

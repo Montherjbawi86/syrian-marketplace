@@ -1,0 +1,96 @@
+<h1 class="mb-4">المحادثة</h1>
+
+<div class="row">
+  <div class="col-md-8 mx-auto">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+          <i class="fas fa-user-circle me-2"></i>
+          <%= @conversation.other_user(current_user).name %>
+        </div>
+        <small class="text-muted">
+          <%= link_to @conversation.listing.title_ar.truncate(30), @conversation.listing %>
+        </small>
+      </div>
+
+      <div class="card-body">
+        <!-- Messages Container -->
+        <div class="messages-container" id="messages" style="height: 400px; overflow-y: auto;">
+          <% @messages.each do |message| %>
+            <div class="message mb-3 <%= message.user == current_user ? 'text-start' : 'text-end' %>">
+              <div class="d-inline-block">
+                <div class="message-bubble <%= message.user == current_user ? 'own-message' : 'other-message' %>">
+                  <%= message.content %>
+                </div>
+                <small class="text-muted d-block mt-1">
+                  <%= message.user.name %> · <%= time_ago_in_words(message.created_at) %>
+                </small>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- New Message Form -->
+        <div class="mt-4">
+          <%= form_with(model: [@conversation, Message.new], local: true) do |f| %>
+            <div class="input-group">
+              <%= f.text_area :content, class: 'form-control', rows: 2,
+                  placeholder: 'اكتب رسالتك هنا...', required: true %>
+              <%= f.submit 'إرسال', class: 'btn btn-primary' %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Scroll to bottom of messages
+document.addEventListener('DOMContentLoaded', function() {
+  var messagesContainer = document.getElementById('messages');
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+});
+</script>
+
+<style>
+.messages-container {
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.message-bubble {
+  padding: 0.8rem 1.2rem;
+  border-radius: 20px;
+  max-width: 400px;
+  word-wrap: break-word;
+}
+
+.own-message {
+  background: linear-gradient(135deg, #1e4a6d 0%, #2e6b95 100%);
+  color: white;
+  border-bottom-left-radius: 5px;
+}
+
+.other-message {
+  background: white;
+  color: #2c3e50;
+  border: 1px solid #e9ecef;
+  border-bottom-right-radius: 5px;
+}
+
+.message {
+  margin-bottom: 1rem;
+}
+
+.message:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .message-bubble {
+    max-width: 250px;
+  }
+}
+</style>

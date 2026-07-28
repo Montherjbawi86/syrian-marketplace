@@ -1,0 +1,279 @@
+/* app/assets/stylesheets/pages/_dashboard_settings.css */
+/* Settings Page Specific Styles */
+
+/* Settings Form */
+.settings-form .form-label {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.settings-form .input-group-text {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border: 2px solid #e9ecef;
+  border-left: none;
+  color: #6c757d;
+}
+
+.settings-form .form-control,
+.settings-form .form-select {
+  border: 2px solid #e9ecef;
+  border-right: none;
+  transition: all 0.3s;
+}
+
+.settings-form .form-control:focus,
+.settings-form .form-select:focus {
+  border-color: var(--primary-red);
+  box-shadow: none;
+}
+
+.settings-form .form-control:focus + .input-group-text,
+.settings-form .form-select:focus + .input-group-text {
+  border-color: var(--primary-red);
+}
+
+/* Avatar Upload */
+.avatar-upload-section {
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: var(--radius-lg);
+  margin-bottom: 2rem;
+}
+
+.avatar-preview {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: var(--shadow-md);
+}
+
+.avatar-preview .avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-preview .avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-flag);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.avatar-upload-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.avatar-preview:hover .avatar-upload-overlay {
+  opacity: 1;
+}
+
+.avatar-upload-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Account Type Options */
+.account-type-options {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: var(--radius-md);
+}
+
+.form-check-input:checked {
+  background-color: var(--primary-red);
+  border-color: var(--primary-red);
+}
+
+.form-check-input:focus {
+  border-color: var(--primary-red);
+  box-shadow: 0 0 0 3px rgba(206, 17, 38, 0.1);
+}
+
+/* Security Options */
+.security-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.security-option-item {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+}
+
+.security-option-item:hover {
+  background: #f8f9fa;
+  transform: translateX(-5px);
+}
+
+.security-option-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(206, 17, 38, 0.1), rgba(0, 122, 61, 0.1));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 1rem;
+  color: var(--primary-red);
+}
+
+.security-option-content {
+  flex: 1;
+  text-align: right;
+}
+
+.security-option-title {
+  display: block;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.security-option-description {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.security-option-arrow {
+  color: #6c757d;
+  font-size: 0.8rem;
+}
+
+/* Notification Options */
+.notification-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.notification-option-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.notification-option-item:last-child {
+  border-bottom: none;
+}
+
+.notification-option-content {
+  flex: 1;
+  text-align: right;
+}
+
+.notification-option-title {
+  display: block;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.notification-option-description {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background: var(--gradient-flag);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--primary-red);
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* Settings Actions */
+.settings-actions {
+  display: flex;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid #e9ecef;
+  margin-top: 1rem;
+}
+
+/* Danger Zone */
+.border-danger {
+  border: 1px solid var(--primary-red) !important;
+}

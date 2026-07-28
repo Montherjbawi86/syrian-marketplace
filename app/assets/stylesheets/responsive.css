@@ -1,0 +1,576 @@
+/* ============================================================
+   RESPONSIVE STYLES – All Screen Sizes
+   Syrian Marketplace – Black, Green & Brown Theme
+   ============================================================ */
+
+/* ============================================================
+   1. EXTRA LARGE SCREENS (≥1400px)
+   ============================================================ */
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+  h2 {
+    font-size: 2.5rem;
+  }
+  h3 {
+    font-size: 2rem;
+  }
+
+  .hero-section {
+    padding: 100px 0;
+  }
+  .hero-title {
+    font-size: 4rem;
+  }
+
+  /* 4-column layouts */
+  .listing-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .category-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ============================================================
+   2. LARGE SCREENS (1200px – 1399px)
+   ============================================================ */
+@media (max-width: 1399px) and (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+
+  .listing-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .category-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ============================================================
+   3. DESKTOP / LAPTOP (992px – 1199px)
+   ============================================================ */
+@media (max-width: 1199px) {
+  .container {
+    max-width: 960px;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+  h2 {
+    font-size: 2rem;
+  }
+
+  .listing-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .category-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .listing-card .image-container {
+    height: 180px;
+  }
+
+  .hero-title {
+    font-size: 3rem;
+  }
+}
+
+/* ============================================================
+   4. TABLET / SMALL LAPTOP (768px – 991px)
+   ============================================================ */
+@media (max-width: 991px) {
+  body {
+    padding-top: 70px;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+  }
+  h2 {
+    font-size: 1.8rem;
+  }
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  .container {
+    max-width: 720px;
+  }
+
+  /* ===== Navbar ===== */
+  .navbar-collapse {
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 1rem 0;
+  }
+  .search-form {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+  .navbar-nav .nav-link {
+    padding: 0.4rem 0.8rem;
+  }
+
+  /* ===== Cards ===== */
+  .card-header {
+    padding: 0.8rem 1rem;
+  }
+  .card-body {
+    padding: 1rem;
+  }
+
+  /* ===== Listing Cards ===== */
+  .listing-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .listing-card .image-container {
+    height: 160px;
+  }
+
+  /* ===== Category Cards ===== */
+  .category-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* ===== Hero ===== */
+  .hero-section {
+    padding: 60px 0;
+  }
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+
+  /* ===== Footer ===== */
+  .footer .row > div {
+    margin-bottom: 1.5rem;
+  }
+  .footer-section-title::after {
+    right: 50%;
+    transform: translateX(50%);
+  }
+
+  /* ===== Sidebar ===== */
+  .sidebar-nav-card {
+    margin-top: 2rem;
+  }
+}
+
+/* ============================================================
+   5. MOBILE LANDSCAPE (576px – 767px)
+   ============================================================ */
+@media (max-width: 767px) {
+  body {
+    padding-top: 60px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+  h2 {
+    font-size: 1.5rem;
+  }
+  h3 {
+    font-size: 1.3rem;
+  }
+
+  .container {
+    max-width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  /* ===== Buttons – Touch‑friendly ===== */
+  .btn {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.9rem;
+    min-height: 44px;
+  }
+
+  /* ===== Navbar ===== */
+  .navbar-brand {
+    font-size: 1.4rem;
+  }
+  .navbar-nav .nav-link {
+    font-size: 0.95rem;
+  }
+  .dropdown-menu {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: none;
+  }
+
+  /* ===== Listing Cards ===== */
+  .listing-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .listing-card .image-container {
+    height: 150px;
+  }
+  .listing-card .price {
+    font-size: 1.1rem;
+  }
+  .listing-card .card-title {
+    font-size: 0.95rem;
+  }
+
+  /* ===== Category Cards ===== */
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .category-card {
+    padding: 1rem 0.5rem;
+  }
+  .category-card i {
+    font-size: 2.2rem;
+  }
+
+  /* ===== Stats ===== */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* ===== Footer ===== */
+  .footer {
+    text-align: center;
+  }
+  .footer-link:hover {
+    transform: none;
+  }
+  .social-links {
+    justify-content: center;
+  }
+  .footer .row > div {
+    margin-bottom: 1.5rem;
+  }
+
+  /* ===== Pagination ===== */
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .page-link {
+    padding: 0.3rem 0.7rem;
+    margin: 2px;
+    min-width: 40px;
+    text-align: center;
+  }
+}
+
+/* ============================================================
+   6. MOBILE PORTRAIT (≤575px)
+   ============================================================ */
+@media (max-width: 575px) {
+  body {
+    padding-top: 55px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+  h2 {
+    font-size: 1.3rem;
+  }
+  h3 {
+    font-size: 1.1rem;
+  }
+
+  .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  /* ===== Buttons – Full width ===== */
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 0.85rem;
+    min-height: 44px;
+  }
+  .btn-group {
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+  .btn-group .btn {
+    flex: 1 1 auto;
+    min-width: 80px;
+  }
+
+  /* ===== Cards ===== */
+  .card-header {
+    padding: 0.5rem 0.7rem;
+  }
+  .card-body {
+    padding: 0.7rem;
+  }
+
+  /* ===== Listing Cards ===== */
+  .listing-grid {
+    grid-template-columns: 1fr;
+  }
+  .listing-card .image-container {
+    height: 180px;
+  }
+  .listing-card .price {
+    font-size: 1.1rem;
+  }
+
+  /* ===== Category Cards ===== */
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .category-card {
+    padding: 0.8rem 0.3rem;
+  }
+  .category-card i {
+    font-size: 1.8rem;
+  }
+  .category-card h5 {
+    font-size: 0.9rem;
+  }
+
+  /* ===== Stats Cards ===== */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+  .stat-card {
+    padding: 0.6rem;
+  }
+  .stat-value {
+    font-size: 1.2rem;
+  }
+
+  /* ===== Navbar – Stack ===== */
+  .navbar-nav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .nav-item {
+    margin: 0.2rem 0;
+  }
+  .nav-link {
+    padding: 0.5rem 0.8rem !important;
+  }
+  .dropdown-menu {
+    position: static;
+    box-shadow: none;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .dropdown-item {
+    padding: 0.4rem 1rem;
+  }
+
+  /* ===== Search ===== */
+  .search-form {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+  .search-input {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.8rem;
+  }
+  .search-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  /* ===== Hero ===== */
+  .hero-section {
+    padding: 30px 0;
+  }
+  .hero-title {
+    font-size: 1.8rem;
+  }
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+  .hero-search-input {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.8rem;
+  }
+  .hero-search-btn {
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+  }
+
+  /* ===== Footer ===== */
+  .footer {
+    padding: 1.5rem 0;
+  }
+  .footer-brand {
+    font-size: 1.3rem;
+  }
+  .footer .col-12 {
+    margin-bottom: 1rem;
+  }
+
+  /* ===== Badges ===== */
+  .badge {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.65rem;
+  }
+
+  /* ===== Tables ===== */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .table {
+    font-size: 0.8rem;
+  }
+  .table th,
+  .table td {
+    padding: 0.4rem 0.5rem;
+  }
+
+  /* ===== Pagination ===== */
+  .page-link {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.8rem;
+    min-width: 32px;
+  }
+}
+
+/* ============================================================
+   7. TOUCH DEVICES – Disable hover animations
+   ============================================================ */
+@media (hover: none) {
+  .btn:hover,
+  .card:hover,
+  .nav-link:hover,
+  .listing-card:hover .listing-image,
+  .category-card:hover i,
+  .dropdown-item:hover {
+    transform: none !important;
+    transition: none !important;
+  }
+  .btn::before {
+    display: none;
+  }
+}
+
+/* ============================================================
+   8. DARK MODE (if user prefers)
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #1a1a1a;
+    color: #f0f0f0;
+  }
+
+  .card {
+    background: #2d2d2d;
+    color: #f0f0f0;
+    border-color: #444;
+  }
+
+  .card-header {
+    background: #333;
+    color: white;
+  }
+
+  .navbar-flag {
+    background: #222 !important;
+  }
+
+  .footer {
+    background: #111 !important;
+  }
+
+  .bg-light {
+    background-color: #2a2a2a !important;
+  }
+
+  .text-muted {
+    color: #aaa !important;
+  }
+
+  .dropdown-menu-flag {
+    background: #2a2a2a;
+    border: 1px solid #444;
+  }
+
+  .dropdown-item-flag {
+    color: #eee;
+  }
+
+  .dropdown-item-flag:hover {
+    background: #444;
+  }
+
+  .listing-price,
+  .price {
+    color: #f0c060;
+  }
+}
+
+/* ============================================================
+   9. PRINT STYLES
+   ============================================================ */
+@media print {
+  /* Hide interactive elements */
+  .navbar,
+  .footer,
+  .btn,
+  .hero-section,
+  .pagination,
+  .breadcrumb,
+  .filters-bar,
+  .sidebar-nav-card,
+  .related-subcategories-card,
+  .flash-messages,
+  .action-buttons,
+  .favorite-wrapper {
+    display: none !important;
+  }
+
+  body {
+    padding: 0;
+    background: white;
+    color: black;
+    font-size: 12pt;
+  }
+
+  .container {
+    max-width: 100%;
+  }
+
+  .card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    break-inside: avoid;
+    background: white;
+  }
+
+  .listing-card .image-container {
+    height: auto;
+    max-height: 150px;
+  }
+
+  .listing-image {
+    max-width: 100%;
+    height: auto;
+  }
+
+  a {
+    text-decoration: none;
+    color: black;
+  }
+
+  .listing-price {
+    color: #000 !important;
+  }
+}

@@ -1,0 +1,60 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1>عقارات للإيجار</h1>
+  <% if user_signed_in? %>
+    <%= link_to new_listing_path(listing_type: 'rent'), class: 'btn btn-success' do %>
+      <i class="fas fa-plus"></i> أضف إعلان إيجار
+    <% end %>
+  <% end %>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-header bg-info text-white">
+        <h5 class="mb-0">فلترة</h5>
+      </div>
+      <div class="card-body">
+        <%= form_tag for_rent_listings_path, method: :get do %>
+          <div class="mb-3">
+            <%= label_tag :city_id, 'المدينة', class: 'form-label' %>
+            <%= select_tag :city_id, options_from_collection_for_select(City.active, :id, :name_ar, params[:city_id]),
+                include_blank: 'جميع المدن', class: 'form-select' %>
+          </div>
+
+          <div class="mb-3">
+            <%= label_tag :min_price, 'السعر من', class: 'form-label' %>
+            <%= number_field_tag :min_price, params[:min_price], class: 'form-control', placeholder: 'أقل سعر' %>
+          </div>
+
+          <div class="mb-3">
+            <%= label_tag :max_price, 'السعر إلى', class: 'form-label' %>
+            <%= number_field_tag :max_price, params[:max_price], class: 'form-control', placeholder: 'أعلى سعر' %>
+          </div>
+
+          <%= submit_tag 'تصفية', class: 'btn btn-info w-100' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-9">
+    <% if @listings.present? %>
+      <div class="row">
+        <%= render partial: 'listings/listing_card', collection: @listings, as: :listing %>
+      </div>
+      <div class="mt-4">
+        <%= paginate @listings %>
+      </div>
+    <% else %>
+      <div class="text-center py-5">
+        <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+        <h3 class="text-muted">لا توجد إعلانات للإيجار حالياً</h3>
+        <% if user_signed_in? %>
+          <%= link_to new_listing_path(listing_type: 'rent'), class: 'btn btn-primary' do %>
+            <i class="fas fa-plus"></i> أضف أول إعلان إيجار
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

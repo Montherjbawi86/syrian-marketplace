@@ -1,0 +1,22 @@
+<% subcategory = local_assigns[:subcategory] %>
+
+<div class="col-md-3 col-6 mb-3">
+  <%= link_to subcategory_path(subcategory, type: params[:type]), class: 'text-decoration-none' do %>
+    <div class="card subcategory-card">
+      <div class="card-body">
+        <!-- Icon -->
+        <div class="subcategory-icon-wrapper">
+          <i class="fas <%= subcategory.category.icon_class %> subcategory-icon"></i>
+        </div>
+
+        <!-- Title -->
+        <h3 class="subcategory-title"><%= subcategory.name_ar %></h3>
+
+        <!-- Count -->
+        <span class="badge subcategory-count">
+          <%= subcategory.listings.active.count %> إعلان
+        </span>
+      </div>
+    </div>
+  <% end %>
+</div>

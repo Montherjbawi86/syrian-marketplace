@@ -1,0 +1,373 @@
+<div class="page-header mb-4">
+  <h1 class="page-title">نشر وظيفة جديدة</h1>
+  <p class="text-muted">املأ النموذج لنشر فرصة عمل جديدة لشركتك</p>
+</div>
+
+<div class="row">
+  <div class="col-lg-10 mx-auto">
+    <div class="card shadow-sm">
+      <div class="card-header bg-success text-white py-3">
+        <h5 class="mb-0"><i class="fas fa-briefcase ms-2"></i> معلومات الوظيفة</h5>
+      </div>
+
+      <div class="card-body p-4">
+        <%= form_with(model: @job, url: jobs_path, local: true) do |f| %>
+
+          <!-- Error Messages -->
+          <% if @job.errors.any? %>
+            <div class="alert alert-danger">
+              <h5 class="alert-heading">حدثت أخطاء:</h5>
+              <ul class="mb-0">
+                <% @job.errors.full_messages.each do |msg| %>
+                  <li><%= msg %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <!-- Company Info (Read-only) -->
+          <div class="company-info-card mb-4 p-3 bg-light rounded">
+            <div class="d-flex align-items-center">
+              <div class="company-logo me-3">
+                <% if current_user.avatar.attached? %>
+                  <%= image_tag current_user.avatar, class: 'rounded-circle', width: 60, height: 60 %>
+                <% else %>
+                  <div class="company-logo-placeholder bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                    <i class="fas fa-building fa-2x"></i>
+                  </div>
+                <% end %>
+              </div>
+              <div>
+                <h5 class="mb-1"><%= current_user.name %></h5>
+                <p class="text-muted mb-0">
+                  <i class="fas fa-building ms-1"></i> شركة |
+                  <i class="fas fa-envelope ms-1"></i> <%= current_user.email %> |
+                  <i class="fas fa-phone ms-1"></i> <%= current_user.phone %>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Job Title -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <%= f.label :title_ar, 'مسمى الوظيفة (بالعربية)', class: 'form-label fw-bold' %>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-briefcase"></i></span>
+                <%= f.text_field :title_ar, class: "form-control #{'is-invalid' if @job.errors[:title_ar].any?}",
+                    placeholder: 'مثال: مطور ويب', required: true %>
+              </div>
+              <% if @job.errors[:title_ar].any? %>
+                <div class="invalid-feedback d-block">
+                  <%= @job.errors[:title_ar].join(', ') %>
+                </div>
+              <% end %>
+            </div>
+
+            <div class="col-md-6">
+              <%= f.label :title, 'Job Title (English)', class: 'form-label fw-bold' %>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-briefcase"></i></span>
+                <%= f.text_field :title, class: "form-control #{'is-invalid' if @job.errors[:title].any?}",
+                    placeholder: 'e.g. Web Developer' %>
+              </div>
+              <% if @job.errors[:title].any? %>
+                <div class="invalid-feedback d-block">
+                  <%= @job.errors[:title].join(', ') %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Job Description (Arabic) - REQUIRED (ONLY ONE FIELD) -->
+          <div class="row mb-3">
+            <div class="col-12">
+              <%= f.label :description_ar, 'وصف الوظيفة (بالعربية)', class: 'form-label fw-bold' %>
+              <span class="text-danger">*</span>
+              <%= f.text_area :description_ar, rows: 6,
+                  class: "form-control #{'is-invalid' if @job.errors[:description_ar].any?}",
+                  placeholder: 'اكتب وصفاً مفصلاً للوظيفة، المهام، والمسؤوليات...',
+                  required: true %>
+              <% if @job.errors[:description_ar].any? %>
+                <div class="invalid-feedback d-block">
+                  <%= @job.errors[:description_ar].join(', ') %>
+                </div>
+              <% else %>
+                <small class="text-muted">هذا الحقل إجباري</small>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Job Description (English) - OPTIONAL -->
+          <div class="row mb-3">
+            <div class="col-12">
+              <%= f.label :description, 'Job Description (English)', class: 'form-label fw-bold' %>
+              <%= f.text_area :description, rows: 4,
+                  class: "form-control #{'is-invalid' if @job.errors[:description].any?}",
+                  placeholder: 'Detailed job description, tasks, and responsibilities...' %>
+              <% if @job.errors[:description].any? %>
+                <div class="invalid-feedback d-block">
+                  <%= @job.errors[:description].join(', ') %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Requirements -->
+          <div class="row mb-3">
+            <div class="col-12">
+              <%= f.label :requirements, 'المتطلبات (بالعربية)', class: 'form-label fw-bold' %>
+              <%= f.text_area :requirements, rows: 4,
+                  class: "form-control #{'is-invalid' if @job.errors[:requirements].any?}",
+                  placeholder: 'المؤهلات المطلوبة، الخبرة، المهارات...' %>
+              <% if @job.errors[:requirements].any? %>
+                <div class="invalid-feedback d-block">
+                  <%= @job.errors[:requirements].join(', ') %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Job Category and Location -->
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <%= f.label :category_id, 'التصنيف الوظيفي', class: 'form-label fw-bold' %>
+              <span class="text-danger">*</span>
+              <%= f.collection_select :category_id, Category.where(category_type: 3), :id, :name_ar,
+                  { prompt: '-- اختر التصنيف --' },
+                  { class: "form-select #{'is-invalid' if @job.errors[:category_id].any?}", required: true, id: 'job_category_id' } %>
+              <% if @job.errors[:category_id].any? %>
+                <div class="invalid-feedback d-block">
+                  <%= @job.errors[:category_id].join(', ') %>
+                </div>
+              <% end %>
+            </div>
+
+            <div class="col-md-4">
+              <%= f.label :subcategory_id, 'التخصص', class: 'form-label fw-bold' %>
+              <%= f.grouped_collection_select :subcategory_id, Category.where(category_type: 3), :subcategories, :name_ar, :id, :name_ar,
+                  { prompt: '-- اختر التخصص --' },
+                  { class: "form-select #{'is-invalid' if @job.errors[:subcategory_id].any?}", id: 'job_subcategory_id' } %>
+              <% if @job.errors[:subcategory_id].any? %>
+                <div class="invalid-feedback d-block">
+                  <%= @job.errors[:subcategory_id].join(', ') %>
+                </div>
+              <% end %>
+            </div>
+
+            <div class="col-md-4">
+              <%= f.label :city_id, 'موقع العمل', class: 'form-label fw-bold' %>
+              <span class="text-danger">*</span>
+              <%= f.collection_select :city_id, City.active, :id, :name_ar,
+                  { prompt: '-- اختر المدينة --' },
+                  { class: "form-select #{'is-invalid' if @job.errors[:city_id].any?}", required: true } %>
+              <% if @job.errors[:city_id].any? %>
+                <div class="invalid-feedback d-block">
+                  <%= @job.errors[:city_id].join(', ') %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Job Type, Experience, Salary -->
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <%= f.label :job_type, 'نوع الوظيفة', class: 'form-label fw-bold' %>
+              <%= f.select :job_type,
+                  [
+                    ['دوام كامل', 'full_time'],
+                    ['دوام جزئي', 'part_time'],
+                    ['عن بعد', 'remote'],
+                    ['عمل حر', 'freelance'],
+                    ['تدريب', 'internship']
+                  ],
+                  { prompt: '-- اختر النوع --' },
+                  { class: "form-select #{'is-invalid' if @job.errors[:job_type].any?}" } %>
+              <% if @job.errors[:job_type].any? %>
+                <div class="invalid-feedback d-block">
+                  <%= @job.errors[:job_type].join(', ') %>
+                </div>
+              <% end %>
+            </div>
+
+            <div class="col-md-4">
+              <%= f.label :experience_level, 'مستوى الخبرة', class: 'form-label fw-bold' %>
+              <%= f.select :experience_level,
+                  [
+                    ['مبتدئ (أقل من سنة)', 'entry'],
+                    ['متوسط (1-3 سنوات)', 'mid'],
+                    ['خبير (3-5 سنوات)', 'senior'],
+                    ['مدير (أكثر من 5 سنوات)', 'lead']
+                  ],
+                  { prompt: '-- اختر المستوى --' },
+                  { class: "form-select #{'is-invalid' if @job.errors[:experience_level].any?}" } %>
+              <% if @job.errors[:experience_level].any? %>
+                <div class="invalid-feedback d-block">
+                  <%= @job.errors[:experience_level].join(', ') %>
+                </div>
+              <% end %>
+            </div>
+
+            <div class="col-md-4">
+              <%= f.label :price, 'الراتب (ل.س)', class: 'form-label fw-bold' %>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-money-bill"></i></span>
+                <%= f.number_field :price, step: 10000, min: 0,
+                    class: "form-control #{'is-invalid' if @job.errors[:price].any?}",
+                    placeholder: '0' %>
+              </div>
+              <% if @job.errors[:price].any? %>
+                <div class="invalid-feedback d-block">
+                  <%= @job.errors[:price].join(', ') %>
+                </div>
+              <% else %>
+                <small class="text-muted">اترك 0 إذا كان الراتب غير محدد</small>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Skills -->
+          <div class="row mb-3">
+            <div class="col-12">
+              <%= f.label :skills, 'المهارات المطلوبة', class: 'form-label fw-bold' %>
+              <%= f.text_field :skills, class: "form-control #{'is-invalid' if @job.errors[:skills].any?}",
+                  placeholder: 'مثال: Ruby, Rails, JavaScript, HTML, CSS' %>
+              <% if @job.errors[:skills].any? %>
+                <div class="invalid-feedback d-block">
+                  <%= @job.errors[:skills].join(', ') %>
+                </div>
+              <% else %>
+                <small class="text-muted">أدخل المهارات مفصولة بفواصل</small>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Benefits -->
+          <div class="row mb-3">
+            <div class="col-12">
+              <%= f.label :benefits, 'المميزات', class: 'form-label fw-bold' %>
+              <%= f.text_area :benefits, rows: 3,
+                  class: "form-control #{'is-invalid' if @job.errors[:benefits].any?}",
+                  placeholder: 'تأمين صحي، ساعات عمل مرنة، إجازات مدفوعة...' %>
+              <% if @job.errors[:benefits].any? %>
+                <div class="invalid-feedback d-block">
+                  <%= @job.errors[:benefits].join(', ') %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Deadline -->
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <%= f.label :deadline, 'آخر موعد للتقديم', class: 'form-label fw-bold' %>
+              <%= f.date_field :deadline, class: "form-control #{'is-invalid' if @job.errors[:deadline].any?}",
+                  min: Date.tomorrow %>
+              <% if @job.errors[:deadline].any? %>
+                <div class="invalid-feedback d-block">
+                  <%= @job.errors[:deadline].join(', ') %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Contact Options -->
+          <div class="row mb-3">
+            <div class="col-12">
+              <label class="form-label fw-bold">طرق التواصل</label>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <%= f.check_box :whatsapp_contact, class: 'form-check-input' %>
+                    <%= f.label :whatsapp_contact, 'واتساب', class: 'form-check-label' %>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <%= f.check_box :phone_contact, class: 'form-check-input' %>
+                    <%= f.label :phone_contact, 'هاتف', class: 'form-check-label' %>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <%= f.check_box :email_contact, class: 'form-check-input' %>
+                    <%= f.label :email_contact, 'بريد إلكتروني', class: 'form-check-label' %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hidden Fields -->
+          <%= f.hidden_field :listing_type, value: 'job' %>
+          <%= f.hidden_field :status, value: 'active' %>
+
+          <!-- Submit Buttons -->
+          <div class="text-center mt-4">
+            <%= f.submit 'نشر الوظيفة', class: 'btn btn-success btn-lg px-5' %>
+            <%= link_to 'إلغاء', jobs_path, class: 'btn btn-outline-secondary btn-lg px-5 ms-2' %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tips Card -->
+<div class="row mt-4">
+  <div class="col-lg-10 mx-auto">
+    <div class="card border-success">
+      <div class="card-header bg-success text-white">
+        <i class="fas fa-lightbulb ms-2"></i> نصائح لنشر وظيفة ناجحة
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <ul class="list-unstyled">
+              <li><i class="fas fa-check-circle text-success ms-2"></i> اكتب عنواناً واضحاً ومحدداً</li>
+              <li><i class="fas fa-check-circle text-success ms-2"></i> حدد المهام والمسؤوليات بدقة</li>
+              <li><i class="fas fa-check-circle text-success ms-2"></i> اذكر المتطلبات الأساسية</li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <ul class="list-unstyled">
+              <li><i class="fas fa-check-circle text-success ms-2"></i> حدد نطاق الراتب إن أمكن</li>
+              <li><i class="fas fa-check-circle text-success ms-2"></i> أضف معلومات عن شركتك</li>
+              <li><i class="fas fa-check-circle text-success ms-2"></i> اذكر مميزات العمل</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const categorySelect = document.getElementById('job_category_id');
+    const subcategorySelect = document.getElementById('job_subcategory_id');
+
+    if (categorySelect) {
+      categorySelect.addEventListener('change', function() {
+        const categoryId = this.value;
+        if (categoryId) {
+          fetch(`/api/categories/${categoryId}/subcategories`)
+            .then(response => response.json())
+            .then(data => {
+              subcategorySelect.innerHTML = '<option value="">-- اختر التخصص --</option>';
+              data.forEach(sub => {
+                const option = document.createElement('option');
+                option.value = sub.id;
+                option.textContent = sub.name_ar;
+                subcategorySelect.appendChild(option);
+              });
+              subcategorySelect.disabled = false;
+            });
+        } else {
+          subcategorySelect.innerHTML = '<option value="">-- اختر التخصص --</option>';
+          subcategorySelect.disabled = true;
+        }
+      });
+    }
+  });
+</script>

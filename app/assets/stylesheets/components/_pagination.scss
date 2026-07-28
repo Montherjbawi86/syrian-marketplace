@@ -1,0 +1,52 @@
+/* app/assets/stylesheets/components/_pagination.css */
+
+.pagination-wrapper {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination {
+  gap: 5px;
+}
+
+.page-link {
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--primary-red);
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s;
+}
+
+.page-link:hover {
+  background: var(--gradient-flag);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.page-item.active .page-link {
+  background: var(--gradient-flag);
+  color: white;
+  box-shadow: var(--shadow-red);
+}
+
+.page-item.disabled .page-link {
+  background: #e9ecef;
+  color: #6c757d;
+  pointer-events: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .page-link {
+    padding: 0.4rem 0.8rem;
+    margin: 2px;
+  }
+}

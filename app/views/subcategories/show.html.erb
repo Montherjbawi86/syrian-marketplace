@@ -1,0 +1,425 @@
+<%# app/views/subcategories/show.html.erb %>
+<%# Dynamic colors: Rent = red/orange, Sell = green %>
+
+<div class="subcategory-page py-5">
+  <div class="container">
+    <!-- Header Section -->
+    <div class="row mb-5">
+      <div class="col-12 text-center scroll-reveal">
+        <h1 class="display-4 fw-bold text-primary"><%= @subcategory.name_ar %></h1>
+        <p class="lead text-muted mt-3">
+          <i class="fas fa-tag me-2 text-success"></i>
+          <strong><%= @listings.total_count %></strong> إعلان
+        </p>
+        <div class="hero-divider"></div>
+      </div>
+    </div>
+
+    <% if @listings.present? && @listings.any? %>
+      <div class="row g-4">
+        <% @listings.each_with_index do |listing, index| %>
+          <!-- Dynamic color based on listing type -->
+          <% card_color_class = case listing.listing_type
+                                when 'rent'
+                                  'card-rent'
+                                when 'sale', 'sell'
+                                  'card-sell'
+                                else
+                                  'card-default'
+                                end %>
+          <div class="col-md-6 col-lg-4 scroll-reveal" style="animation-delay: <%= 0.05 * index %>s">
+            <div class="card listing-card h-100 <%= card_color_class %>">
+              <!-- Image Section -->
+              <div class="listing-card-image">
+                <% if listing.images.attached? && listing.images.any? %>
+                  <%= image_tag listing.images.first, class: "card-img-top listing-image", style: "height: 200px; width: 100%; object-fit: cover;" %>
+                <% else %>
+                  <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="fas fa-image fa-3x text-muted"></i>
+                  </div>
+                <% end %>
+
+                <!-- Dynamic Type Badge -->
+                <div class="listing-type-badge-wrapper">
+                  <% badge_color_class = case listing.listing_type
+                                         when 'rent'
+                                           'badge-rent'
+                                         when 'sale', 'sell'
+                                           'badge-sell'
+                                         else
+                                           'badge-default'
+                                         end %>
+                  <span class="badge listing-type-badge <%= badge_color_class %>">
+                    <i class="fas <%= listing.listing_type == 'job' ? 'fa-briefcase' : (listing.listing_type == 'rent' ? 'fa-home' : 'fa-tag') %> me-1"></i>
+                    <%= listing.listing_type_display %>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Card Body -->
+              <div class="card-body">
+                <h5 class="card-title mb-2">
+                  <%= link_to listing.title_ar.presence || listing.title, listing_path(listing), class: "text-decoration-none listing-title" %>
+                </h5>
+                <p class="card-text text-muted small mb-2">
+                  <i class="fas fa-user me-1"></i> <%= listing.user&.name %>
+                  <i class="fas fa-map-marker-alt ms-2 me-1"></i> <%= listing.city&.name_ar || 'غير محدد' %>
+                </p>
+                <p class="card-text text-secondary small listing-description">
+                  <%= truncate(strip_tags(listing.description_ar.presence || listing.description), length: 90) %>
+                </p>
+
+                <!-- Price & Details Button -->
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                  <div class="listing-price <%= card_color_class %>">
+                    <%= listing.formatted_price %>
+                  </div>
+                  <%= link_to 'تفاصيل', listing_path(listing), class: "btn btn-sm btn-outline-primary rounded-pill #{card_color_class}-btn" %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Pagination (same as before) -->
+      <div class="pagination-wrapper mt-5">
+        <nav aria-label="التنقل بين صفحات الإعلانات">
+          <ul class="pagination justify-content-center">
+            <li class="page-item <%= 'disabled' if @listings.current_page == 1 %>">
+              <% if @listings.current_page == 1 %>
+                <span class="page-link disabled"><span>الأولى</span></span>
+              <% else %>
+                <%= link_to url_for(page: 1), class: 'page-link' do %><span>الأولى</span><% end %>
+              <% end %>
+            </li>
+            <li class="page-item <%= 'disabled' unless @listings.prev_page %>">
+              <% if @listings.prev_page %>
+                <%= link_to url_for(page: @listings.prev_page), class: 'page-link' do %><span>السابقة</span><% end %>
+              <% else %>
+                <span class="page-link disabled"><span>السابقة</span></span>
+              <% end %>
+            </li>
+            <% start_page = [@listings.current_page - 2, 1].max %>
+            <% end_page = [start_page + 4, @listings.total_pages].min %>
+            <% start_page = [end_page - 4, 1].max if end_page - start_page < 4 %>
+            <% (start_page..end_page).each do |page_num| %>
+              <li class="page-item <%= 'active' if page_num == @listings.current_page %>">
+                <%= link_to page_num, url_for(page: page_num), class: 'page-link' %>
+              </li>
+            <% end %>
+            <li class="page-item <%= 'disabled' unless @listings.next_page %>">
+              <% if @listings.next_page %>
+                <%= link_to url_for(page: @listings.next_page), class: 'page-link' do %><span>التالية</span><% end %>
+              <% else %>
+                <span class="page-link disabled"><span>التالية</span></span>
+              <% end %>
+            </li>
+            <li class="page-item <%= 'disabled' if @listings.current_page == @listings.total_pages %>">
+              <% if @listings.current_page == @listings.total_pages %>
+                <span class="page-link disabled"><span>الأخيرة</span></span>
+              <% else %>
+                <%= link_to url_for(page: @listings.total_pages), class: 'page-link' do %><span>الأخيرة</span><% end %>
+              <% end %>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    <% else %>
+      <div class="text-center py-5 scroll-reveal">
+        <div class="empty-state-icon mb-4">
+          <i class="fas fa-box-open fa-4x text-muted"></i>
+        </div>
+        <h3 class="text-muted mb-3">لا توجد إعلانات</h3>
+        <p class="lead text-muted mb-4">لا توجد إعلانات في هذا القسم حالياً</p>
+        <%= link_to new_listing_path(subcategory_id: @subcategory.id), class: "btn btn-primary btn-lg px-5" do %>
+          <i class="fas fa-plus me-2"></i> أضف إعلانك الأول
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<style>
+  /* ===== Subcategory Page - Conditional Colors ===== */
+  :root {
+    --primary: #2E5C3E;
+    --primary-dark: #1e4030;
+    --primary-light: #e8f3ec;
+    --rent: #dc2626;
+    --rent-dark: #b91c1c;
+    --rent-light: #fee2e2;
+    --sell: #2E5C3E;
+    --sell-dark: #1e4030;
+    --sell-light: #e8f3ec;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --transition: all 0.2s ease;
+  }
+
+  .subcategory-page {
+    background: #f8f9fa;
+    min-height: 70vh;
+  }
+
+  /* Header */
+  .text-primary {
+    color: var(--primary) !important;
+  }
+  .hero-divider {
+    width: 80px;
+    height: 4px;
+    background: var(--primary);
+    margin: 1rem auto 0;
+    border-radius: 4px;
+  }
+
+  /* Base Card Styles */
+  .listing-card {
+    transition: var(--transition);
+    border-radius: 1rem;
+    overflow: hidden;
+    background: white;
+    border: none;
+    box-shadow: var(--shadow-sm);
+  }
+  .listing-card:hover {
+    transform: translateY(-4px);
+  }
+  .listing-card-image {
+    position: relative;
+    overflow: hidden;
+  }
+  .listing-image {
+    transition: transform 0.3s ease;
+  }
+  .listing-card:hover .listing-image {
+    transform: scale(1.05);
+  }
+  .listing-type-badge-wrapper {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+  }
+  .listing-type-badge {
+    font-weight: 500;
+    font-size: 0.7rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .listing-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: color 0.2s;
+    color: var(--gray-800);
+  }
+  .listing-title:hover {
+    color: var(--primary) !important;
+  }
+  .listing-description {
+    line-height: 1.5;
+    color: var(--gray-600);
+  }
+  .listing-price {
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+  .btn-outline-primary {
+    border-radius: 2rem;
+    padding: 0.3rem 1rem;
+    font-size: 0.8rem;
+    transition: var(--transition);
+  }
+
+  /* Rent Theme (Red/Orange) */
+  .card-rent:hover {
+    box-shadow: 0 10px 20px rgba(220, 38, 38, 0.15);
+  }
+  .badge-rent {
+    background-color: var(--rent);
+    color: white;
+  }
+  .listing-price.card-rent {
+    color: var(--rent);
+  }
+  .card-rent-btn {
+    border-color: var(--rent);
+    color: var(--rent);
+  }
+  .card-rent-btn:hover {
+    background-color: var(--rent);
+    border-color: var(--rent);
+    color: white;
+  }
+
+  /* Sell Theme (Green) */
+  .card-sell:hover {
+    box-shadow: 0 10px 20px rgba(46, 92, 62, 0.15);
+  }
+  .badge-sell {
+    background-color: var(--sell);
+    color: white;
+  }
+  .listing-price.card-sell {
+    color: var(--sell);
+  }
+  .card-sell-btn {
+    border-color: var(--sell);
+    color: var(--sell);
+  }
+  .card-sell-btn:hover {
+    background-color: var(--sell);
+    border-color: var(--sell);
+    color: white;
+  }
+
+  /* Default (Jobs etc.) */
+  .card-default:hover {
+    box-shadow: 0 10px 20px rgba(46, 92, 62, 0.1);
+  }
+  .badge-default {
+    background-color: var(--primary);
+    color: white;
+  }
+  .listing-price.card-default {
+    color: var(--primary);
+  }
+  .btn-outline-primary {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+  .btn-outline-primary:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+  }
+
+  /* Pagination (same as before) */
+  .pagination-wrapper {
+    margin-top: 2rem;
+    padding: 1rem 0;
+  }
+  .pagination {
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 0;
+  }
+  .page-item {
+    list-style: none;
+  }
+  .page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 0.75rem;
+    border-radius: 0.75rem !important;
+    border: 1px solid var(--gray-200);
+    background-color: white;
+    color: var(--gray-700);
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: var(--transition);
+    text-decoration: none;
+  }
+  .page-item.active .page-link {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    box-shadow: 0 2px 6px rgba(46, 92, 62, 0.2);
+  }
+  .page-link:hover:not(.disabled) {
+    background-color: var(--primary-light);
+    border-color: var(--primary);
+    color: var(--primary-dark);
+    transform: translateY(-1px);
+  }
+  .page-link.disabled,
+  .page-item.disabled .page-link {
+    background-color: var(--gray-100);
+    border-color: var(--gray-200);
+    color: #9ca3af;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  /* Responsive pagination */
+  @media (max-width: 576px) {
+    .pagination {
+      gap: 0.25rem;
+    }
+    .page-link {
+      min-width: 34px;
+      height: 34px;
+      padding: 0 0.5rem;
+      font-size: 0.75rem;
+    }
+    .page-item:first-child .page-link span,
+    .page-item:nth-child(2) .page-link span,
+    .page-item:nth-last-child(2) .page-link span,
+    .page-item:last-child .page-link span {
+      display: none;
+    }
+    .page-item:first-child .page-link:before {
+      content: "\f100";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      display: inline-block;
+    }
+    .page-item:nth-child(2) .page-link:before {
+      content: "\f104";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+    }
+    .page-item:nth-last-child(2) .page-link:before {
+      content: "\f105";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+    }
+    .page-item:last-child .page-link:before {
+      content: "\f101";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+    }
+  }
+
+  /* Scroll reveal */
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  }
+  .scroll-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Empty state */
+  .empty-state-icon i {
+    color: var(--primary-light);
+    opacity: 0.7;
+  }
+</style>
+
+<script>
+  (function() {
+    const revealElements = document.querySelectorAll('.scroll-reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    revealElements.forEach(el => observer.observe(el));
+  })();
+</script>

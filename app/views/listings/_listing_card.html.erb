@@ -1,0 +1,77 @@
+<div class="col-md-3 col-6 mb-4">
+  <div class="card h-100 listing-card">
+    <!-- Card hover effect stripe -->
+    <div class="card-hover-stripe"></div>
+
+    <%= link_to listing_path(listing), class: 'listing-link' do %>
+      <!-- Image Container -->
+      <div class="image-container">
+        <% if listing.images.attached? && listing.images.any? %>
+          <%= image_tag listing.images.first, class: 'card-img-top listing-image' %>
+        <% else %>
+          <div class="no-image-placeholder" style="background:darkgrey;">
+            <i class="fas fa-image fa-3x mb-2"></i>
+            <span>لا توجد صورة</span>
+          </div>
+        <% end %>
+
+        <!-- Badges Container -->
+        <div class="badge-container">
+          <span class="badge listing-type-badge type-<%= listing.listing_type %>">
+            <%= listing.listing_type_display %>
+          </span>
+        </div>
+
+        <% if listing.urgent? %>
+          <div class="urgent-badge">
+            <span class="badge">
+              <i class="fas fa-bolt"></i> مستعجل
+            </span>
+          </div>
+        <% end %>
+
+        <% if listing.featured? %>
+          <div class="featured-badge">
+            <span class="badge">
+              <i class="fas fa-crown"></i> مميز
+            </span>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Card Body -->
+      <div class="card-body">
+        <h6 class="card-title listing-title">
+          <%= listing.title_ar %>
+        </h6>
+
+        <!-- Price -->
+        <p class="listing-price">
+          <%= listing.formatted_price %>
+        </p>
+
+        <!-- Location and Date -->
+        <div class="listing-meta">
+          <small class="listing-location">
+            <i class="fas fa-map-marker-alt location-icon"></i> <%= listing.city&.name_ar || 'غير محدد' %>
+          </small>
+          <small class="listing-date">
+            <i class="far fa-clock date-icon"></i> <%= time_ago_in_words(listing.created_at) %>
+          </small>
+        </div>
+
+        <!-- View Details -->
+        <div class="view-details">
+          <span class="view-details-text">
+            عرض التفاصيل <i class="fas fa-arrow-left"></i>
+          </span>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- ✅ استخدام partial زر المفضلة -->
+    <%= render 'listings/favorite_button', listing: listing %>
+  </div>
+</div>
+
+<!-- CSS موجود بالفعل في الـ partial، يمكنك إزالته من هنا -->

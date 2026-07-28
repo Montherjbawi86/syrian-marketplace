@@ -1,0 +1,70 @@
+/* app/assets/stylesheets/components/_badges.css */
+
+.badge {
+  border-radius: var(--radius-round);
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Color Variants */
+.badge-red {
+  background: var(--primary-red);
+  color: white;
+}
+
+.badge-green {
+  background: var(--primary-green);
+  color: white;
+}
+
+.badge-flag {
+  background: var(--gradient-flag);
+  color: white;
+}
+
+.badge-outline-red {
+  background: transparent;
+  border: 2px solid var(--primary-red);
+  color: var(--primary-red);
+}
+
+.badge-outline-green {
+  background: transparent;
+  border: 2px solid var(--primary-green);
+  color: var(--primary-green);
+}
+
+/* Size Variants */
+.badge-sm {
+  padding: 0.3rem 0.8rem;
+  font-size: 0.7rem;
+}
+
+.badge-lg {
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+}
+
+/* Subcategory Badge */
+.subcategory-badge {
+  display: inline-block;
+  background: #f8f9fa;
+  color: #6c757d;
+  padding: 0.2rem 0.8rem;
+  border-radius: var(--radius-round);
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.subcategory-badge:hover {
+  background: var(--primary-red);
+  color: white;
+}
+
+.more-badge {
+  background: var(--primary-red);
+  color: white;
+  font-weight: 700;
+}

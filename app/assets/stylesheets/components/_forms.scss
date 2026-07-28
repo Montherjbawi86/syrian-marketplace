@@ -1,0 +1,79 @@
+/* app/assets/stylesheets/components/_forms.css */
+
+.form-control,
+.form-select {
+  border-radius: var(--radius-md);
+  border: 2px solid #e9ecef;
+  padding: 0.7rem 1rem;
+  transition: all 0.3s;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-red);
+  box-shadow: 0 0 0 3px rgba(206, 17, 38, 0.1);
+  outline: none;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+/* Input Group */
+.input-group-text {
+  background: var(--gradient-flag);
+  color: white;
+  border: none;
+}
+
+/* Checkbox & Radio */
+.form-check-input:checked {
+  background-color: var(--primary-red);
+  border-color: var(--primary-red);
+}
+
+.form-check-input:focus {
+  border-color: var(--primary-red);
+  box-shadow: 0 0 0 3px rgba(206, 17, 38, 0.1);
+}
+
+/* Search Form (Hero) */
+.hero-search-form {
+  margin-top: 2rem;
+  max-width: 900px;          /* wider than 600px */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-search-container {
+  max-width: 100%;           /* let it fill the parent */
+  margin: 0 auto;
+}
+
+.hero-search-group {
+  border-radius: var(--radius-round);
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.hero-search-input {
+  border: none;
+  padding: 1rem 1.5rem;
+  font-size: 1.1rem;
+}
+
+.hero-search-btn {
+  background: var(--gradient-flag);
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.hero-search-btn:hover {
+  background: var(--gradient-flag-hover);
+  transform: scale(1.05);
+}

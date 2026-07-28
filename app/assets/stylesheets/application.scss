@@ -1,0 +1,312 @@
+/*
+ * Main manifest file
+ */
+
+// 1. Custom variables (if you have them; otherwise skip)
+// @import "custom/variables";   <-- remove
+
+// 2. Bootstrap
+@import "bootstrap";
+
+// 3. Your theme
+@import "syrian_theme";
+
+// 4. Components
+@import "components/navbar";
+@import "components/footer";
+@import "components/buttons";
+@import "components/cards";
+@import "components/forms";
+@import "components/badges";
+@import "components/alerts";
+@import "components/pagination";
+@import "components/breadcrumb";
+
+// 5. Pages
+@import "pages/home";
+@import "pages/categories";
+@import "pages/listings";
+@import "pages/dashboard";
+@import "pages/dashboard_settings";
+@import "pages/dashboard_responsive";
+@import "pages/subcategories";
+@import "pages/jobs";
+
+// 6. Responsive utilities
+@import "responsive";
+
+// Remove these if they don't exist:
+// @import "custom/responsive";
+// @import "custom/components";
+
+.bg-purple {
+  background-color: #6f42c1;
+  color: white;
+}
+
+.bg-purple:hover {
+  background-color: #5a32a3;
+}
+
+.bg-purple {
+  background-color: #6f42c1;
+  color: white;
+}
+
+.bg-purple:hover {
+  background-color: #5a32a3;
+}
+
+/* Listing Show Page */
+.listing-show-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+.listing-gallery {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.main-image-container {
+  width: 100%;
+  overflow: hidden;
+}
+
+.main-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+}
+
+.thumbnail {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.thumbnail:hover {
+  opacity: 1;
+}
+
+.thumbnail.active {
+  border: 2px solid #007bff;
+  opacity: 1;
+}
+
+.listing-details {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.listing-details-title {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.listing-details-price {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #28a745;
+  margin-bottom: 1.5rem;
+}
+
+.listing-details-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.meta-item i {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa;
+  border-radius: 50%;
+  color: #007bff;
+}
+
+.meta-item-label {
+  font-size: 0.75rem;
+  color: #6c757d;
+}
+
+.meta-item-value {
+  font-weight: 600;
+  color: #333;
+}
+
+.listing-description {
+  line-height: 1.8;
+  color: #555;
+}
+
+.seller-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.seller-avatar i {
+  font-size: 4rem;
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
+
+.seller-name {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.seller-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.seller-stat-value {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.seller-stat-label {
+  font-size: 0.75rem;
+  color: #6c757d;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.action-btn-primary {
+  background: #007bff;
+  color: white;
+}
+
+.action-btn-primary:hover {
+  background: #0056b3;
+  color: white;
+}
+
+.action-btn-whatsapp {
+  background: #25D366;
+  color: white;
+}
+
+.action-btn-whatsapp:hover {
+  background: #128C7E;
+  color: white;
+}
+
+.action-btn-outline {
+  border: 1px solid #007bff;
+  color: #007bff;
+  background: white;
+}
+
+.action-btn-outline:hover {
+  background: #007bff;
+  color: white;
+}
+
+.similar-listings {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.similar-listings-title {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #007bff;
+}
+
+.similar-listing-item {
+  display: flex;
+  gap: 1rem;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 8px;
+  transition: background 0.3s;
+}
+
+.similar-listing-item:hover {
+  background: #f8f9fa;
+}
+
+.similar-listing-info {
+  flex: 1;
+}
+
+.similar-listing-title {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.similar-listing-price {
+  font-size: 0.875rem;
+  color: #28a745;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .listing-show-container {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+  
+  .main-image {
+    height: 250px;
+  }
+}

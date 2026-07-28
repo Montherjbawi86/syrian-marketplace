@@ -1,0 +1,359 @@
+<%= form_with(model: @listing, local: true, class: "needs-validation", multipart: true) do |f| %>
+  <% if @listing.errors.any? %>
+    <div class="alert alert-danger">
+      <h4>يرجى تصحيح الأخطاء التالية:</h4>
+      <ul>
+        <% @listing.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- Title Fields -->
+  <div class="row">
+    <div class="col-md-8 mb-3">
+      <%= f.label :title_ar, "العنوان (بالعربية)", class: "form-label fw-bold" %>
+      <%= f.text_field :title_ar, class: "form-control", required: true, placeholder: "مثال: شقة فاخرة للبيع في دمشق" %>
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <%= f.label :title, "Title (English) - اختياري", class: "form-label" %>
+      <%= f.text_field :title, class: "form-control", placeholder: "Optional English title" %>
+    </div>
+  </div>
+
+  <!-- Description Fields -->
+  <div class="row">
+    <div class="col-md-8 mb-3">
+      <%= f.label :description_ar, "الوصف (بالعربية)", class: "form-label fw-bold" %>
+      <%= f.text_area :description_ar, rows: 5, class: "form-control", required: true, placeholder: "صف المنتج أو الخدمة بالتفصيل..." %>
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <%= f.label :description, "Description (English) - اختياري", class: "form-label" %>
+      <%= f.text_area :description, rows: 5, class: "form-control", placeholder: "Optional English description" %>
+    </div>
+  </div>
+
+  <!-- Category and Subcategory -->
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <%= f.label :category_id, "التصنيف الرئيسي", class: "form-label fw-bold" %>
+      <%= f.collection_select :category_id, @categories, :id, :name_ar,
+          { prompt: "-- اختر التصنيف --" },
+          { class: "form-select", id: "listing_category_id", required: true } %>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <%= f.label :subcategory_id, "التصنيف الفرعي", class: "form-label fw-bold" %>
+      <%= f.select :subcategory_id, [],
+          { prompt: "-- اختر التصنيف أولاً --" },
+          { class: "form-select", id: "listing_subcategory_id", disabled: true } %>
+    </div>
+  </div>
+
+  <!-- City and Listing Type -->
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <%= f.label :city_id, "المدينة", class: "form-label fw-bold" %>
+      <%= f.collection_select :city_id, @cities, :id, :name_ar,
+          { prompt: "-- اختر المدينة --" },
+          { class: "form-select", required: true } %>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <%= f.label :listing_type, "نوع الإعلان", class: "form-label fw-bold" %>
+      <%= f.select :listing_type,
+          [["للبيع", "sell"], ["للإيجار", "rent"], ["مطلوب", "wanted"], ["وظيفة", "job"]],
+          { prompt: "-- اختر نوع الإعلان --" },
+          { class: "form-select", required: true } %>
+    </div>
+  </div>
+
+  <!-- Condition and Price -->
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <%= f.label :condition, "الحالة", class: "form-label fw-bold" %>
+      <%= f.select :condition,
+          [
+            ["جديد", "brand_new"],
+            ["مثل جديد", "like_new"],
+            ["جيد", "good"],
+            ["مقبول", "fair"],
+            ["ضعيف", "poor"]
+          ],
+          { prompt: "-- اختر الحالة --" },
+          { class: "form-select" } %>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <%= f.label :price, "السعر (ل.س)", class: "form-label fw-bold" %>
+      <div class="input-group">
+        <span class="input-group-text">ل.س</span>
+        <%= f.number_field :price, class: "form-control", step: 1000, placeholder: "100000" %>
+      </div>
+      <small class="text-muted">اتركه فارغاً إذا كان مجانياً أو غير محدد</small>
+    </div>
+  </div>
+
+  <!-- Contact Options -->
+  <div class="card mb-4">
+    <div class="card-header bg-light">
+      <h5 class="mb-0"><i class="fas fa-phone-alt me-2"></i>خيارات التواصل</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4 mb-2">
+          <div class="form-check">
+            <%= f.check_box :whatsapp_contact, class: 'form-check-input' %>
+            <%= f.label :whatsapp_contact, 'تواصل عبر واتساب', class: 'form-check-label' %>
+          </div>
+        </div>
+        <div class="col-md-4 mb-2">
+          <div class="form-check">
+            <%= f.check_box :phone_contact, class: 'form-check-input' %>
+            <%= f.label :phone_contact, 'تواصل عبر الهاتف', class: 'form-check-label' %>
+          </div>
+        </div>
+        <div class="col-md-4 mb-2">
+          <div class="form-check">
+            <%= f.check_box :email_contact, class: 'form-check-input' %>
+            <%= f.label :email_contact, 'تواصل عبر البريد الإلكتروني', class: 'form-check-label' %>
+          </div>
+        </div>
+      </div>
+      <small class="text-muted">اختر طرق التواصل التي تفضلها</small>
+    </div>
+  </div>
+
+  <!-- Sequential Images Upload (One by One) -->
+  <div class="mb-4">
+    <label class="form-label fw-bold">
+      <i class="fas fa-images me-2"></i>الصور
+    </label>
+
+    <!-- Existing Images (for edit mode) -->
+    <% if @listing.persisted? && @listing.images.attached? %>
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <label class="form-label">الصور الحالية</label>
+          <div class="row">
+            <% @listing.images.each_with_index do |image, index| %>
+              <div class="col-md-2 col-3 mb-2">
+                <%= image_tag image.variant(resize_to_limit: [100, 100]), class: 'img-thumbnail', style: "width: 100%; height: 80px; object-fit: cover;" %>
+                <div class="form-check mt-1">
+                  <%= check_box_tag "remove_images[]", image.id, false, class: 'form-check-input' %>
+                  <%= label_tag "remove_image_#{image.id}", "حذف", class: 'form-check-label text-danger small' %>
+                </div>
+                <% if index == 0 %>
+                  <span class="badge bg-success w-100 mt-1" style="font-size: 10px;">الرئيسية</span>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Add New Images One by One -->
+    <div class="add-image-section">
+      <button type="button" class="btn btn-outline-success mb-3" id="addImageBtn" style="border: 2px dashed #006400;">
+        <i class="fas fa-plus-circle me-2"></i>
+        إضافة صورة
+      </button>
+      <input type="file" id="singleImageInput" accept="image/*" style="display: none;">
+
+      <!-- Hidden input for all images -->
+      <input type="file" name="listing[images][]" id="listing_images_input" multiple style="display: none;">
+
+      <!-- Preview Container for New Images -->
+      <div id="new_images_preview" class="row g-2 mt-2"></div>
+
+      <small class="text-muted d-block mt-2">
+        <i class="fas fa-info-circle me-1"></i>
+        يمكنك إضافة الصور واحدة تلو الأخرى. الصورة الأولى ستكون الرئيسية.
+      </small>
+    </div>
+  </div>
+
+  <!-- Form Actions -->
+  <div class="mt-4 d-flex gap-2">
+    <%= f.submit @listing.persisted? ? "تحديث الإعلان" : "نشر الإعلان", class: "btn btn-success btn-lg px-5" %>
+    <%= link_to "إلغاء", @listing.persisted? ? @listing : root_path, class: "btn btn-secondary btn-lg px-4" %>
+  </div>
+<% end %>
+
+<script>
+  // Subcategories loading
+  document.addEventListener('DOMContentLoaded', function() {
+    const categorySelect = document.getElementById('listing_category_id');
+    const subcategorySelect = document.getElementById('listing_subcategory_id');
+    const currentSubcategory = '<%= @listing.subcategory_id %>';
+
+    if (categorySelect && subcategorySelect) {
+      categorySelect.addEventListener('change', function() {
+        const categoryId = this.value;
+
+        if (categoryId) {
+          subcategorySelect.disabled = false;
+          subcategorySelect.innerHTML = '<option value="">⏳ جاري التحميل...</option>';
+
+          fetch(`/categories/${categoryId}/subcategories.json`)
+            .then(response => response.json())
+            .then(data => {
+              subcategorySelect.innerHTML = '<option value="">-- اختر التصنيف الفرعي --</option>';
+
+              data.forEach(subcategory => {
+                const option = document.createElement('option');
+                option.value = subcategory.id;
+                option.textContent = subcategory.name_ar;
+                if (subcategory.id == currentSubcategory) {
+                  option.selected = true;
+                }
+                subcategorySelect.appendChild(option);
+              });
+            })
+            .catch(error => {
+              console.error('Error loading subcategories:', error);
+              subcategorySelect.innerHTML = '<option value="">-- خطأ في تحميل التصنيفات --</option>';
+            });
+        } else {
+          subcategorySelect.disabled = true;
+          subcategorySelect.innerHTML = '<option value="">-- اختر التصنيف أولاً --</option>';
+        }
+      });
+
+      if (categorySelect.value) {
+        categorySelect.dispatchEvent(new Event('change'));
+      }
+    }
+  });
+
+  // Sequential image upload (one by one)
+  let imagesArray = [];
+  const MAX_IMAGES = 10;
+
+  const addImageBtn = document.getElementById('addImageBtn');
+  const singleImageInput = document.getElementById('singleImageInput');
+  const newImagesPreview = document.getElementById('new_images_preview');
+  const hiddenFileInput = document.getElementById('listing_images_input');
+
+  if (addImageBtn && singleImageInput) {
+    addImageBtn.addEventListener('click', () => {
+      if (imagesArray.length >= MAX_IMAGES) {
+        alert(`لا يمكنك إضافة أكثر من ${MAX_IMAGES} صور`);
+        return;
+      }
+      singleImageInput.click();
+    });
+
+    singleImageInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        alert('الرجاء اختيار ملف صورة صالح (jpg, png, gif)');
+        return;
+      }
+
+      if (imagesArray.length >= MAX_IMAGES) {
+        alert(`لا يمكنك إضافة أكثر من ${MAX_IMAGES} صور`);
+        return;
+      }
+
+      addImage(file);
+      singleImageInput.value = '';
+    });
+  }
+
+  function addImage(file) {
+    const index = imagesArray.length;
+    imagesArray.push(file);
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const col = document.createElement('div');
+      col.className = 'col-md-2 col-3';
+      col.innerHTML = `
+        <div class="position-relative image-preview-item">
+          <img src="${event.target.result}" class="img-fluid rounded border" style="height: 80px; width: 100%; object-fit: cover;">
+          <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle"
+                  onclick="removeNewImage(${index})" style="width: 22px; height: 22px; padding: 0; font-size: 10px;">
+            <i class="fas fa-times"></i>
+          </button>
+          ${index === 0 ? '<span class="position-absolute bottom-0 start-0 bg-success text-white w-100 text-center" style="font-size: 9px;">الرئيسية</span>' : ''}
+          <div class="text-center small mt-1 text-muted">صورة ${index + 1}</div>
+        </div>
+      `;
+      newImagesPreview.appendChild(col);
+    };
+    reader.readAsDataURL(file);
+    updateHiddenFileInput();
+  }
+
+  window.removeNewImage = function(index) {
+    imagesArray.splice(index, 1);
+    refreshNewImagesPreview();
+  };
+
+  function refreshNewImagesPreview() {
+    newImagesPreview.innerHTML = '';
+    imagesArray.forEach((file, idx) => {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const col = document.createElement('div');
+        col.className = 'col-md-2 col-3';
+        col.innerHTML = `
+          <div class="position-relative image-preview-item">
+            <img src="${event.target.result}" class="img-fluid rounded border" style="height: 80px; width: 100%; object-fit: cover;">
+            <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle"
+                    onclick="removeNewImage(${idx})" style="width: 22px; height: 22px; padding: 0; font-size: 10px;">
+              <i class="fas fa-times"></i>
+            </button>
+            ${idx === 0 ? '<span class="position-absolute bottom-0 start-0 bg-success text-white w-100 text-center" style="font-size: 9px;">الرئيسية</span>' : ''}
+            <div class="text-center small mt-1 text-muted">صورة ${idx + 1}</div>
+          </div>
+        `;
+        newImagesPreview.appendChild(col);
+      };
+      reader.readAsDataURL(file);
+    });
+    updateHiddenFileInput();
+  }
+
+  function updateHiddenFileInput() {
+    const dt = new DataTransfer();
+    imagesArray.forEach(file => dt.items.add(file));
+    hiddenFileInput.files = dt.files;
+  }
+</script>
+
+<style>
+  .image-preview-item {
+    transition: transform 0.2s ease;
+  }
+  .image-preview-item:hover {
+    transform: scale(1.02);
+  }
+  .btn-outline-success {
+    border-color: #006400;
+    color: #006400;
+  }
+  .btn-outline-success:hover {
+    background-color: #006400;
+    color: white;
+  }
+  .btn-success {
+    background-color: #006400;
+    border-color: #006400;
+  }
+  .btn-success:hover {
+    background-color: #004d00;
+    border-color: #004d00;
+  }
+  .form-check-input:checked {
+    background-color: #006400;
+    border-color: #006400;
+  }
+</style>

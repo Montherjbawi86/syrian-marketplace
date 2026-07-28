@@ -1,0 +1,13 @@
+<div class="container mb-4">
+  <div class="d-flex justify-content-between align-items-center">
+    <div>
+      <h1 class="display-5 fw-bold mb-2"><%= @title %></h1>
+      <p class="lead text-muted"><%= @listings.total_count %> إعلان</p>
+    </div>
+    <div>
+      <%= link_to new_listing_path(subcategory_id: @subcategory.id), class: "btn btn-primary btn-lg" do %>
+        <i class="fas fa-plus-circle me-2"></i> أضف إعلانك
+      <% end %>
+    </div>
+  </div>
+</div>

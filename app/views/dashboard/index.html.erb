@@ -1,0 +1,232 @@
+<div class="page-header">
+  <h1 class="page-title">لوحة التحكم</h1>
+  <p class="page-description">مرحباً بعودتك، <%= current_user.name %></p>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-4 mb-5">
+  <div class="col-md-3 col-6">
+    <div class="card stats-card">
+      <div class="card-body stats-card-body">
+        <div class="stats-icon-wrapper bg-red">
+          <i class="fas fa-chart-line stats-icon"></i>
+        </div>
+        <div class="stats-content">
+          <h3 class="stats-number"><%= @stats[:total_listings] %></h3>
+          <p class="stats-label">إجمالي الإعلانات</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 col-6">
+    <div class="card stats-card">
+      <div class="card-body stats-card-body">
+        <div class="stats-icon-wrapper bg-green">
+          <i class="fas fa-check-circle stats-icon"></i>
+        </div>
+        <div class="stats-content">
+          <h3 class="stats-number"><%= @stats[:active_listings] %></h3>
+          <p class="stats-label">إعلانات نشطة</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 col-6">
+    <div class="card stats-card">
+      <div class="card-body stats-card-body">
+        <div class="stats-icon-wrapper" style="background: linear-gradient(135deg, #CE1126, #007A3D);">
+          <i class="fas fa-eye stats-icon"></i>
+        </div>
+        <div class="stats-content">
+          <h3 class="stats-number"><%= @stats[:total_views] %></h3>
+          <p class="stats-label">إجمالي المشاهدات</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 col-6">
+    <div class="card stats-card">
+      <div class="card-body stats-card-body">
+        <div class="stats-icon-wrapper" style="background: #f39c12;">
+          <i class="fas fa-envelope stats-icon"></i>
+        </div>
+        <div class="stats-content">
+          <h3 class="stats-number"><%= @stats[:unread_messages] %></h3>
+          <p class="stats-label">رسائل غير مقروءة</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Dashboard Content -->
+<div class="row g-4">
+  <!-- Recent Listings -->
+  <div class="col-lg-6">
+    <div class="card dashboard-card">
+      <div class="card-header dashboard-card-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">
+            <i class="fas fa-clock ms-2"></i>
+            أحدث إعلاناتك
+          </h5>
+          <span class="badge badge-red"><%= @recent_listings.count %></span>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <% if @recent_listings.any? %>
+          <div class="list-group list-group-flush">
+            <% @recent_listings.each do |listing| %>
+              <%= link_to listing_path(listing), class: 'list-group-item dashboard-list-item' do %>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="d-flex align-items-center">
+                    <% if listing.images.attached? && listing.images.any? %>
+                      <%= image_tag listing.images.first, class: 'dashboard-listing-thumbnail' %>
+                    <% else %>
+                      <div class="dashboard-listing-thumbnail-placeholder">
+                        <i class="fas fa-image"></i>
+                      </div>
+                    <% end %>
+                    <div class="me-3">
+                      <h6 class="dashboard-listing-title"><%= listing.title_ar.truncate(30) %></h6>
+                      <small class="dashboard-listing-meta">
+                        <i class="fas fa-eye ms-1"></i> <%= listing.views_count || 0 %> |
+                        <i class="fas fa-heart ms-1"></i> <%= listing.favorites.count %>
+                      </small>
+                    </div>
+                  </div>
+                  <div class="text-left">
+                    <span class="badge <%= listing.active? ? 'badge-green' : 'badge-secondary' %>">
+                      <%= listing.status_display %>
+                    </span>
+                    <small class="d-block text-muted mt-1">
+                      <%= time_ago_in_words(listing.created_at) %>
+                    </small>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+
+          <div class="card-footer dashboard-card-footer">
+            <%= link_to dashboard_listings_path, class: 'btn btn-outline-primary w-100' do %>
+              <i class="fas fa-list ms-2"></i>
+              عرض كل الإعلانات
+            <% end %>
+          </div>
+        <% else %>
+          <div class="dashboard-empty-state">
+            <i class="fas fa-box-open fa-3x mb-3"></i>
+            <h6>لا توجد إعلانات</h6>
+            <p class="text-muted">ابدأ بإضافة أول إعلان لك</p>
+            <%= link_to new_listing_path, class: 'btn btn-primary btn-sm' do %>
+              <i class="fas fa-plus"></i> أضف إعلان
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions & Stats -->
+  <div class="col-lg-6">
+    <!-- Quick Links -->
+    <div class="card dashboard-card mb-4">
+      <div class="card-header dashboard-card-header">
+        <h5 class="mb-0">
+          <i class="fas fa-bolt ms-2"></i>
+          روابط سريعة
+        </h5>
+      </div>
+      <div class="card-body p-0">
+        <div class="quick-links-grid">
+          <%= link_to dashboard_listings_path, class: 'quick-link-item' do %>
+            <div class="quick-link-icon bg-red">
+              <i class="fas fa-list"></i>
+            </div>
+            <span class="quick-link-text">إعلاناتي</span>
+          <% end %>
+
+          <%= link_to dashboard_messages_path, class: 'quick-link-item' do %>
+            <div class="quick-link-icon bg-green">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <span class="quick-link-text">الرسائل</span>
+            <% if @stats[:unread_messages] > 0 %>
+              <span class="quick-link-badge"><%= @stats[:unread_messages] %></span>
+            <% end %>
+          <% end %>
+
+          <%= link_to dashboard_favorites_path, class: 'quick-link-item' do %>
+            <div class="quick-link-icon" style="background: #f39c12;">
+              <i class="fas fa-heart"></i>
+            </div>
+            <span class="quick-link-text">المفضلة</span>
+          <% end %>
+
+          <%= link_to dashboard_settings_path, class: 'quick-link-item' do %>
+            <div class="quick-link-icon" style="background: #3498db;">
+              <i class="fas fa-cog"></i>
+            </div>
+            <span class="quick-link-text">الإعدادات</span>
+          <% end %>
+
+          <%= link_to new_listing_path, class: 'quick-link-item' do %>
+            <div class="quick-link-icon" style="background: #27ae60;">
+              <i class="fas fa-plus"></i>
+            </div>
+            <span class="quick-link-text">إعلان جديد</span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity Summary -->
+    <div class="card dashboard-card">
+      <div class="card-header dashboard-card-header">
+        <h5 class="mb-0">
+          <i class="fas fa-chart-pie ms-2"></i>
+          ملخص النشاط
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="activity-summary">
+          <div class="activity-item">
+            <div class="activity-info">
+              <span class="activity-label">نسبة الإعلانات النشطة</span>
+              <span class="activity-value">
+                <%= @stats[:total_listings] > 0 ? ((@stats[:active_listings].to_f / @stats[:total_listings]) * 100).round(1) : 0 %>%
+              </span>
+            </div>
+            <div class="progress activity-progress">
+              <div class="progress-bar" style="width: <%= @stats[:total_listings] > 0 ? ((@stats[:active_listings].to_f / @stats[:total_listings]) * 100).round : 0 %>%;"></div>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-info">
+              <span class="activity-label">متوسط المشاهدات</span>
+              <span class="activity-value">
+                <%= @stats[:total_listings] > 0 ? (@stats[:total_views].to_f / @stats[:total_listings]).round(1) : 0 %>
+              </span>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-info">
+              <span class="activity-label">عضو منذ</span>
+              <span class="activity-value">
+                <%= time_ago_in_words(current_user.created_at) %>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

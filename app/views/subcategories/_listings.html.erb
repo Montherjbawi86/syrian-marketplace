@@ -1,0 +1,44 @@
+cat > app/views/listings/_listing_card.html.erb << 'EOF'
+<div class="col-md-6 col-lg-4">
+  <div class="card listing-card h-100 shadow-sm border-0">
+    <div class="position-relative">
+      <% if listing.images.attached? && listing.images.first %>
+        <%= image_tag listing.images.first, class: "card-img-top", style: "height: 220px; width: 100%; object-fit: cover;" %>
+      <% else %>
+        <div class="bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center" style="height: 220px;">
+          <i class="fas fa-image fa-4x text-secondary"></i>
+        </div>
+      <% end %>
+
+      <div class="position-absolute top-0 start-0 m-2">
+        <span class="badge <%= listing.listing_type == 'sell' ? 'bg-success' : 'bg-info' %> px-3 py-2 rounded-pill shadow-sm">
+          <%= listing.listing_type == 'sell' ? 'للبيع' : 'للإيجار' %>
+        </span>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <h5 class="card-title mb-2">
+        <%= link_to listing.title_ar, listing_path(listing), class: "text-decoration-none text-dark stretched-link" %>
+      </h5>
+      <p class="card-text text-muted small mb-3">
+        <%= truncate(listing.description_ar, length: 80) %>
+      </p>
+      <div class="mb-2">
+        <span class="text-primary fw-bold fs-4">
+          <%= number_to_currency(listing.price, unit: "ل.س", format: "%u %n", precision: 0) %>
+        </span>
+      </div>
+      <div class="d-flex justify-content-between align-items-center text-muted small mt-3">
+        <span>
+          <i class="fas fa-map-marker-alt me-1"></i>
+          <%= listing.city&.name_ar || 'غير محدد' %>
+        </span>
+        <span>
+          <i class="far fa-clock me-1"></i>
+          <%= time_ago_in_words(listing.created_at) %>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

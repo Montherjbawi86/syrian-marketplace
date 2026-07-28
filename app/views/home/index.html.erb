@@ -1,0 +1,956 @@
+<!-- Hero Section with Search Filters -->
+<section class="hero-section">
+
+  <div class="hero-content">
+    <h1 class="hero-title">السوق السوري</h1>
+    <p class="hero-subtitle">أكبر منصة للبيع والشراء والتوظيف في سوريا</p>
+
+    <!-- Search Form with Filters (Rails form) -->
+    <%= form_tag search_path, method: :get, class: 'hero-search-form', id: 'mainSearchForm' do %>
+      <!-- Main Search Input with suggestions wrapper -->
+      <div class="input-group mb-3" style="position: relative;">
+        <%= text_field_tag :q, params[:q], class: 'form-control hero-search-input', id: 'searchInput', placeholder: 'ابحث عن...', autocomplete: 'off' %>
+        <button class="btn hero-search-btn" type="submit" id="searchBtn">
+          <i class="fas fa-search"></i> بحث
+        </button>
+        <div id="suggestionsBox" class="search-suggestions"></div>
+      </div>
+
+      <!-- Filter Row (with floating label wrappers) -->
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="floating-wrapper">
+            <%= select_tag :category_id,
+                options_from_collection_for_select(@categories, :id, :name_ar, params[:category_id]),
+                prompt: 'جميع الأقسام',
+                class: 'form-select',
+                id: 'categorySelect' %>
+            <label class="floating-label">القسم</label>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="floating-wrapper">
+            <%= select_tag :city_id,
+                options_from_collection_for_select(@cities, :id, :name_ar, params[:city_id]),
+                prompt: 'جميع المدن',
+                class: 'form-select',
+                id: 'citySelect' %>
+            <label class="floating-label">المدينة</label>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="floating-wrapper">
+            <%= select_tag :listing_type,
+                options_for_select([
+                  ['جميع الأنواع', ''],
+                  ['للبيع', 'sell'],
+                  ['للإيجار', 'rent'],
+                  ['مطلوب', 'wanted'],
+                  ['وظيفة', 'job']
+                ], params[:listing_type]),
+                class: 'form-select',
+                id: 'typeSelect' %>
+            <label class="floating-label">النوع</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Advanced Filters (collapsible) -->
+      <button type="button" class="toggle-filters mt-2" id="toggleAdvancedBtn">
+        <i class="fas fa-sliders-h"></i> خيارات متقدمة
+      </button>
+      <div class="row g-3 mt-2" id="advancedFilters" style="display: none;">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text" style="color: white;">السعر من</span>
+            <%= number_field_tag :min_price, params[:min_price], class: "form-control", placeholder: "الحد الأدنى", step: 1000, id: "minPrice" %>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text" style="color: white;">السعر إلى</span>
+            <%= number_field_tag :max_price, params[:max_price], class: "form-control", placeholder: "الحد الأعلى", step: 1000, id: "maxPrice" %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reset Filter Link -->
+      <div class="text-center mt-4">
+        <%= link_to "إعادة تعيين", root_path, class: "reset-link text-decoration-none small", style: "color:#CE1126;" %>
+      </div>
+    <% end %>
+  </div>
+</section>
+
+<!-- Categories Section (unchanged) -->
+<div class="section-header">
+  <h2 class="section-title"><i class="fas fa-th-large section-icon"></i> الأقسام الرئيسية</h2>
+  <%= link_to 'عرض الكل', categories_path, class: 'btn btn-outline-primary view-all-btn' %>
+</div>
+
+<div class="row g-4 categories-grid">
+  <% @categories.each do |category| %>
+    <div class="col-md-3 col-6">
+      <%= link_to category_path(category), class: 'category-link' do %>
+        <div class="card category-card">
+          <div class="card-body category-card-body">
+            <i class="fas <%= category.icon %> category-icon"></i>
+            <h5 class="category-name"><%= category.name_ar %></h5>
+            <span class="badge category-count"><%= category.listings.count %> إعلان</span>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<!-- For Sale & For Rent Sections -->
+<div class="row listings-sections">
+  <div class="col-md-6 mb-4">
+    <div class="card">
+   <div class="card-header section-header">
+   <h5 class="mb-0"><i class="fas fa-tag ms-2" style="color: black;"></i> للبيع</h5>
+    <%= link_to 'المزيد', for_sale_listings_path, class: 'btn btn-sm section-more-btn', style: "color: white; background: green; border: 1px solid #ccc;" %>
+</div>
+      <div class="card-body">
+        <div class="list-group list-group-flush">
+          <% @for_sale.each do |listing| %>
+            <%= link_to listing_path(listing), class: 'list-group-item listing-item' do %>
+              <div class="listing-item-content">
+                <h6 class="listing-item-title"><%= listing.title_ar.truncate(30) %></h6>
+                <small class="listing-item-location"><i class="fas fa-map-marker-alt location-icon"></i> <%= listing.city&.name_ar %></small>
+              </div>
+              <span class="listing-item-price"><%= number_to_currency(listing.price, unit: "ل.س", format: "%u %n", precision: 0) %></span>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 mb-4">
+    <div class="card">
+      <div class="card-header section-header">
+        <h5 class="mb-0"><i class="fas fa-key ms-2" style="color: black;"></i>للإيجار</h5>
+        <%= link_to 'المزيد', for_rent_listings_path, class: 'btn btn-sm section-more-btn', style: "color: white; background: green; border: 1px solid #ccc;" %>
+      </div>
+      <div class="card-body">
+        <div class="list-group list-group-flush">
+          <% @for_rent.each do |listing| %>
+            <%= link_to listing_path(listing), class: 'list-group-item listing-item' do %>
+              <div class="listing-item-content">
+                <h6 class="listing-item-title"><%= listing.title_ar.truncate(30) %></h6>
+                <small class="listing-item-location"><i class="fas fa-map-marker-alt location-icon"></i> <%= listing.city&.name_ar %></small>
+              </div>
+              <span class="listing-item-price"><%= number_to_currency(listing.price, unit: "ل.س", format: "%u %n", precision: 0) %></span>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Listings -->
+<div class="section-header">
+  <h2 class="section-title"><i class="fas fa-clock section-icon"></i> أحدث الإعلانات</h2>
+  <%= link_to 'عرض الكل', listings_path, class: 'btn btn-outline-primary view-all-btn' %>
+</div>
+
+<div class="row g-4 recent-listings">
+  <%= render partial: 'listings/listing_card', collection: @recent_listings, as: :listing %>
+</div>
+
+<!-- Cities Section -->
+<div class="section-header">
+  <h2 class="section-title"><i class="fas fa-city section-icon"></i> المدن</h2>
+  <%= link_to 'عرض الكل', cities_path, class: 'btn btn-outline-primary view-all-btn' %>
+</div>
+
+<div class="row g-3 cities-grid">
+  <% @cities.each do |city| %>
+    <div class="col-md-2 col-4">
+      <%= link_to city_path(city), class: 'city-link' do %>
+        <div class="card city-card">
+          <div class="card-body city-card-body">
+            <i class="fas fa-city city-icon"></i>
+            <h6 class="city-name"><%= city.name_ar %></h6>
+            <small class="city-count"><%= city.listings.count %> إعلان</small>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<style>
+  /* ========== YOUR EXISTING STYLES (keep as is) ========== */
+/* ---- Full-width hero (without the negative margin trick) ---- */
+.hero-section {
+  width: 100%;                      /* full width of viewport */
+  max-width: 100%;                  /* prevent overflow */
+  padding: 10px 0 10px 0;           /* adjust as needed */
+  margin: 0;                        /* remove any offsets */
+  border-radius: 0 !important;
+  background: var(--gradient-flag);
+  color: white;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;           /* important for padding */
+}
+
+/* Centered content inside hero */
+.hero-content {
+  max-width: 1200px;
+  margin: 0 auto;                   /* this centers the block */
+  padding: 0 20px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Optional: make the search form a bit wider on large screens */
+.hero-search-form {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Ensure the container inside hero doesn't restrict width */
+.hero-section .container {
+  max-width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 1;
+  }
+
+  .hero-title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #ffffff, #f0f0f0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-subtitle {
+    font-size: 1.3rem;
+    opacity: 0.95;
+    margin-bottom: 2rem;
+    color: white;
+  }
+
+  .hero-search-form {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.3s ease, transform 0.2s;
+  }
+  .hero-search-form.focused {
+    box-shadow: 0 0 0 4px rgba(206,17,38,0.2), 0 15px 35px rgba(0,0,0,0.15);
+    transform: scale(1.01);
+  }
+
+  .hero-search-input {
+    border-radius: 50px 0 0 50px !important;
+    border: 2px solid #e0e0e0;
+    padding: 14px 20px;
+    font-size: 1rem;
+    height: auto;
+    transition: all 0.3s ease;
+  }
+
+  .hero-search-input:focus {
+    border-color: #CE1126;
+    box-shadow: 0 0 0 0.2rem rgba(206,17,38,0.25);
+  }
+
+  .hero-search-btn {
+    background: var(--gradient-flag);
+    border: none;
+    color: white;
+    border-radius: 0 50px 50px 0 !important;
+    padding: 14px 35px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-search-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    opacity: 0.95;
+  }
+  .hero-search-btn:active::after {
+    content: '';
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    animation: ripple 0.4s ease-out;
+  }
+  @keyframes ripple {
+    to { transform: translate(-50%, -50%) scale(4); opacity: 0; }
+  }
+
+  .hero-search-form .form-select,
+  .hero-search-form .form-control {
+    border-radius: 10px;
+    border: 2px solid #e0e0e0;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+  }
+
+  .hero-search-form .form-select:focus,
+  .hero-search-form .form-control:focus {
+    border-color: #CE1126;
+    box-shadow: 0 0 0 0.2rem rgba(206,17,38,0.25);
+  }
+
+  .hero-search-form .input-group-text {
+    background-color: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    color: #666;
+    font-weight: 500;
+  }
+
+  /* floating labels */
+  .floating-wrapper {
+    position: relative;
+  }
+  .floating-label {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    padding: 0 6px;
+    font-size: 0.85rem;
+    color: #6c757d;
+    transition: 0.2s ease;
+    pointer-events: none;
+  }
+  .floating-label.active {
+    top: -6px;
+    font-size: 11px;
+    color: #CE1126;
+  }
+
+  /* suggestions box */
+  .search-suggestions {
+    position: absolute;
+    background: white;
+    width: calc(100% - 120px);
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    z-index: 1050;
+    display: none;
+    margin-top: 5px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  .suggestion-item {
+    padding: 12px 18px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+  }
+  .suggestion-item:hover {
+    background: #fff0f0;
+  }
+
+  /* toggle advanced button */
+  .toggle-filters {
+    background: none;
+    border: none;
+    color: #CE1126;
+    font-weight: 600;
+    transition: 0.2s;
+  }
+  .toggle-filters:hover {
+    color: #007A3D;
+    transform: translateX(-5px);
+  }
+
+  /* reset link */
+  .reset-link {
+    color: #CE1126 !important;
+  }
+  .reset-link:hover {
+    color: #007A3D !important;
+    text-decoration: underline;
+  }
+
+  /* active filter tags (placed after hero) */
+  .active-filters-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
+  .filter-tag {
+    background: #f1f3f5;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #333;
+  }
+  .filter-tag i {
+    margin-right: 8px;
+    cursor: pointer;
+    color: #CE1126;
+  }
+  .filter-tag i:hover {
+    color: darkred;
+  }
+
+  .categories-grid {
+    margin-bottom: 3rem;
+    margin-top: 2rem;
+  }
+  main.container {
+    margin-top: 0;
+    padding-top: 40px;
+  }
+  .mt-5 { margin-top: 0rem !important; }
+
+  @media (max-width: 768px) {
+    .hero-section { padding: 50px 0 60px 0; }
+    .hero-title { font-size: 2rem; }
+    .hero-subtitle { font-size: 1rem; }
+    .hero-search-form { padding: 20px; }
+    .hero-search-btn { padding: 10px 20px; font-size: 0.9rem; }
+    .hero-search-input { padding: 10px 15px; font-size: 0.9rem; }
+  }
+
+/* ========================================
+   HOME PAGE STYLES - SYRIAN MARKETPLACE
+   Colors: #CE1126 (Red) & #007A3D (Green)
+   With Stunning Motions & Hover Effects
+   ======================================== */
+
+/* ========== BASE VARIABLES ========== */
+:root {
+    --primary-red: #CE1126;
+    --primary-red-dark: #9B0F1E;
+    --primary-red-light: #E64C5C;
+    --primary-red-soft: #FCE8EA;
+    --secondary-green: #007A3D;
+    --secondary-green-dark: #005A2B;
+    --secondary-green-light: #4CAF6E;
+    --secondary-green-soft: #E8F3E9;
+    --gradient-flag: linear-gradient(135deg, #CE1126, #007A3D);
+    --gradient-flag-reverse: linear-gradient(135deg, #007A3D, #CE1126);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+    --shadow-red: 0 8px 25px rgba(206, 17, 38, 0.15);
+    --shadow-green: 0 8px 25px rgba(0, 122, 61, 0.15);
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+    from { opacity: 0; transform: translateX(-40px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes floatSlow {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+@keyframes floatParticle {
+    0% { transform: translateY(0) translateX(0); opacity: 0; }
+    50% { opacity: 0.6; }
+    100% { transform: translateY(-100px) translateX(50px); opacity: 0; }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes iconBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2) rotate(10deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.05); opacity: 1; }
+}
+
+@keyframes ripple {
+    0% { transform: scale(0); opacity: 0.5; }
+    100% { transform: scale(4); opacity: 0; }
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(50px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-50px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes borderPulse {
+    0%, 100% { border-color: var(--primary-red-soft); }
+    50% { border-color: var(--primary-red); }
+}
+
+/* ========== HERO SECTION ========== */
+.hero-section {
+    background: var(--gradient-flag);
+    color: white;
+    padding: 80px 0 90px 0;
+    position: relative;
+    overflow: hidden;
+    border-radius: 0 0 70px 70px;
+}
+
+/* Floating particles in hero */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: -10%;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, var(--primary-red-light), transparent);
+    opacity: 0.3;
+    border-radius: 50%;
+    animation: floatSlow 12s ease-in-out infinite;
+}
+
+.hero-section::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -10%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, var(--secondary-green-light), transparent);
+    opacity: 0.3;
+    border-radius: 50%;
+    animation: floatSlow 10s ease-in-out infinite reverse;
+}
+
+/* Floating particles */
+.hero-section .floating-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: floatParticle 8s infinite linear;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin-bottom: 1rem;
+    animation: slideInRight 0.8s ease;
+}
+
+.hero-subtitle {
+    font-size: 1.3rem;
+    opacity: 0.95;
+    margin-bottom: 2rem;
+    animation: slideInLeft 0.8s ease;
+}
+
+/* ========== SEARCH FORM ========== */
+.hero-search-form {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    transition: all 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+.hero-search-form:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px rgba(206, 17, 38, 0.2);
+}
+
+.hero-search-input {
+    border-radius: 50px 0 0 50px !important;
+    border: 2px solid #e0e0e0;
+    padding: 14px 20px;
+    transition: all 0.3s;
+}
+
+.hero-search-input:focus {
+    border-color: var(--primary-red);
+    box-shadow: 0 0 0 3px rgba(206, 17, 38, 0.2);
+    transform: scale(1.01);
+}
+
+.hero-search-btn {
+    background: var(--gradient-flag);
+    border: none;
+    color: white;
+    border-radius: 0 50px 50px 0 !important;
+    padding: 14px 35px;
+    font-weight: 600;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-search-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(206, 17, 38, 0.3);
+}
+
+.hero-search-btn:active::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    animation: ripple 0.4s ease-out;
+}
+
+/* Form selects */
+.hero-search-form .form-select {
+    border-radius: 10px;
+    border: 2px solid #e0e0e0;
+    padding: 10px 12px;
+    transition: all 0.3s;
+}
+
+.hero-search-form .form-select:focus {
+    border-color: var(--primary-red);
+    box-shadow: 0 0 0 3px rgba(206, 17, 38, 0.1);
+}
+
+/* ========== SECTION HEADERS ========== */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 50px 0 30px 0;
+    border-right: 5px solid var(--primary-red);
+    padding-right: 18px;
+}
+
+.section-title {
+    font-weight: 800;
+    font-size: 1.6rem;
+}
+
+.section-icon {
+    margin-left: 8px;
+    color: var(--primary-red);
+}
+
+.view-all-btn {
+    background: transparent;
+    border: 1px solid var(--primary-red);
+    color: var(--primary-red);
+    border-radius: 50px;
+    padding: 6px 18px;
+    transition: all 0.3s;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.view-all-btn:hover {
+    background: var(--gradient-flag);
+    color: white;
+    transform: translateX(-5px);
+    border-color: transparent;
+}
+
+</style>
+
+<script>
+  // Scroll reveal animation
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+        }
+    });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.scroll-reveal').forEach(el => {
+    observer.observe(el);
+});
+
+// Add floating particles to hero
+function addFloatingParticles() {
+    const heroSection = document.querySelector('.hero-section');
+    if (heroSection) {
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'floating-particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 8 + 's';
+            particle.style.animationDuration = 5 + Math.random() * 7 + 's';
+            particle.style.width = (2 + Math.random() * 5) + 'px';
+            particle.style.height = particle.style.width;
+            heroSection.appendChild(particle);
+        }
+    }
+}
+addFloatingParticles();
+  (function() {
+    // ========== DOM elements ==========
+    const searchForm = document.getElementById('mainSearchForm');
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const suggestionsBox = document.getElementById('suggestionsBox');
+    const toggleBtn = document.getElementById('toggleAdvancedBtn');
+    const advancedFilters = document.getElementById('advancedFilters');
+    const resetLink = document.querySelector('.reset-link');
+    const categorySelect = document.getElementById('categorySelect');
+    const citySelect = document.getElementById('citySelect');
+    const typeSelect = document.getElementById('typeSelect');
+    const minPrice = document.getElementById('minPrice');
+    const maxPrice = document.getElementById('maxPrice');
+
+    // ========== 1. Typewriter placeholder ==========
+    const phrases = ['ابحث عن...', 'شقة للبيع', 'سيارة مستعملة', 'وظيفة محاسب', 'جهاز لابتوب'];
+    let phraseIdx = 0, charIdx = 0, isDeleting = false;
+    function typePlaceholder() {
+      const current = phrases[phraseIdx];
+      if (isDeleting) {
+        searchInput.placeholder = current.substring(0, charIdx - 1);
+        charIdx--;
+      } else {
+        searchInput.placeholder = current.substring(0, charIdx + 1);
+        charIdx++;
+      }
+      if (!isDeleting && charIdx === current.length) {
+        isDeleting = true;
+        setTimeout(typePlaceholder, 2000);
+      } else if (isDeleting && charIdx === 0) {
+        isDeleting = false;
+        phraseIdx = (phraseIdx + 1) % phrases.length;
+        setTimeout(typePlaceholder, 400);
+      } else {
+        setTimeout(typePlaceholder, isDeleting ? 40 : 90);
+      }
+    }
+    typePlaceholder();
+
+    // ========== 2. Live suggestions (AJAX ready) ==========
+    // You can replace the mock data with a real fetch to your listings#suggestions endpoint
+    const mockSuggestions = ['شقة في دمشق', 'سيارة مرسيدس', 'وظيفة مبرمج', 'أرض للبيع', 'غرفة للإيجار', 'أثاث منزلي', 'جهاز تلفاز'];
+    searchInput.addEventListener('input', function(e) {
+      const query = e.target.value.trim();
+      if (query.length < 1) {
+        suggestionsBox.style.display = 'none';
+        return;
+      }
+      // Replace with real AJAX if needed:
+      // fetch(`/listings/suggestions?q=${encodeURIComponent(query)}`)
+      //   .then(r => r.json()).then(data => { ... })
+      const filtered = mockSuggestions.filter(s => s.includes(query));
+      if (filtered.length) {
+        suggestionsBox.innerHTML = filtered.map(s => `<div class="suggestion-item">${s}</div>`).join('');
+        suggestionsBox.style.display = 'block';
+      } else {
+        suggestionsBox.style.display = 'none';
+      }
+    });
+    suggestionsBox.addEventListener('click', (e) => {
+      const item = e.target.closest('.suggestion-item');
+      if (item) {
+        searchInput.value = item.innerText;
+        suggestionsBox.style.display = 'none';
+      }
+    });
+    document.addEventListener('click', (e) => {
+      if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+        suggestionsBox.style.display = 'none';
+      }
+    });
+
+    // ========== 3. Loading state & ripple on submit ==========
+    searchForm.addEventListener('submit', function(e) {
+      // Do not prevent default – let Rails submit normally.
+      // But we show loading state on button.
+      const originalHtml = searchBtn.innerHTML;
+      searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري البحث...';
+      searchBtn.disabled = true;
+      // Re-enable after a short delay (in case the form takes time)
+      setTimeout(() => {
+        if (searchBtn.disabled) {
+          searchBtn.innerHTML = originalHtml;
+          searchBtn.disabled = false;
+        }
+      }, 3000);
+      // The form will submit naturally, but if you want to prevent double submission:
+      // e.target.submit() will still work with disabled button? We'll let it go.
+      // No e.preventDefault() here – keep Rails behavior.
+    });
+
+    // ========== 4. Toggle advanced filters ==========
+    if (toggleBtn && advancedFilters) {
+      toggleBtn.addEventListener('click', () => {
+        if (advancedFilters.style.display === 'none') {
+          advancedFilters.style.display = 'flex';
+          toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i> إخفاء الخيارات';
+        } else {
+          advancedFilters.style.display = 'none';
+          toggleBtn.innerHTML = '<i class="fas fa-sliders-h"></i> خيارات متقدمة';
+        }
+      });
+    }
+
+    // ========== 5. Focus glow on search form ==========
+    const formCard = document.querySelector('.hero-search-form');
+    searchInput.addEventListener('focus', () => formCard.classList.add('focused'));
+    searchInput.addEventListener('blur', () => formCard.classList.remove('focused'));
+
+    // ========== 6. Floating labels initialization ==========
+    function initFloatingLabels() {
+      document.querySelectorAll('.floating-wrapper select, .floating-wrapper input').forEach(field => {
+        const wrapper = field.closest('.floating-wrapper');
+        const label = wrapper.querySelector('.floating-label');
+        if (!label) return;
+        const update = () => {
+          if (field.value && field.value !== '') label.classList.add('active');
+          else label.classList.remove('active');
+        };
+        field.addEventListener('change', update);
+        field.addEventListener('focus', () => label.classList.add('active'));
+        field.addEventListener('blur', update);
+        update();
+      });
+    }
+    initFloatingLabels();
+
+    // ========== 7. Active filter tags (display current params) ==========
+    const tagsContainer = document.createElement('div');
+    tagsContainer.id = 'filterTagsContainer';
+    tagsContainer.className = 'active-filters-tags';
+    // Insert after the hero section (or before categories)
+    const heroSection = document.querySelector('.hero-section');
+    heroSection.insertAdjacentElement('afterend', tagsContainer);
+
+    function updateFilterTags() {
+      const filters = [];
+      if (categorySelect.value) {
+        const text = categorySelect.options[categorySelect.selectedIndex]?.text;
+        if (text && text !== 'جميع الأقسام') filters.push({name: 'القسم', val: text});
+      }
+      if (citySelect.value) {
+        const text = citySelect.options[citySelect.selectedIndex]?.text;
+        if (text && text !== 'جميع المدن') filters.push({name: 'المدينة', val: text});
+      }
+      if (typeSelect.value) {
+        const text = typeSelect.options[typeSelect.selectedIndex]?.text;
+        if (text && text !== 'جميع الأنواع') filters.push({name: 'النوع', val: text});
+      }
+      if (minPrice.value) filters.push({name: 'السعر من', val: minPrice.value});
+      if (maxPrice.value) filters.push({name: 'السعر إلى', val: maxPrice.value});
+      if (filters.length === 0) {
+        tagsContainer.innerHTML = '';
+        return;
+      }
+      tagsContainer.innerHTML = filters.map(f => `
+        <span class="filter-tag">
+          ${f.name}: ${f.val}
+          <i class="fas fa-times" data-filter="${f.name}"></i>
+        </span>
+      `).join('');
+      // attach remove event
+      document.querySelectorAll('#filterTagsContainer .filter-tag i').forEach(icon => {
+        icon.addEventListener('click', (e) => {
+          const filterName = icon.getAttribute('data-filter');
+          if (filterName === 'القسم') categorySelect.value = '';
+          if (filterName === 'المدينة') citySelect.value = '';
+          if (filterName === 'النوع') typeSelect.value = '';
+          if (filterName === 'السعر من') minPrice.value = '';
+          if (filterName === 'السعر إلى') maxPrice.value = '';
+          // trigger change events to update floating labels and re-submit?
+          // We'll let the user manually search again, or auto-submit:
+          updateFilterTags();
+          // Optionally auto-submit the form:
+          // searchForm.submit();
+        });
+      });
+    }
+    // monitor changes on all filters
+    [categorySelect, citySelect, typeSelect, minPrice, maxPrice].forEach(el => {
+      if (el) el.addEventListener('change', updateFilterTags);
+    });
+    updateFilterTags();
+
+    // ========== 8. Reset all filters ==========
+    if (resetLink) {
+      resetLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        // clear all form fields
+        searchInput.value = '';
+        categorySelect.value = '';
+        citySelect.value = '';
+        typeSelect.value = '';
+        if (minPrice) minPrice.value = '';
+        if (maxPrice) maxPrice.value = '';
+        // trigger change events for floating labels and tags
+        [categorySelect, citySelect, typeSelect, minPrice, maxPrice].forEach(f => {
+          if (f) {
+            const ev = new Event('change');
+            f.dispatchEvent(ev);
+          }
+        });
+        updateFilterTags();
+        // optionally close advanced filters
+        if (advancedFilters) advancedFilters.style.display = 'none';
+        if (toggleBtn) toggleBtn.innerHTML = '<i class="fas fa-sliders-h"></i> خيارات متقدمة';
+        // submit the form to reset search results
+        searchForm.submit();
+      });
+    }
+  })();
+</script>

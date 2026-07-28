@@ -1,0 +1,52 @@
+<% if user_signed_in? %>
+  <div class="favorite-wrapper">
+    <% if listing.favorited_by?(current_user) %>
+      <%= link_to unfavorite_listing_path(listing),
+          class: 'favorite-btn active',
+          onclick: "event.preventDefault(); fetch(this.href, { method: 'DELETE', headers: { 'X-CSRF-Token': document.querySelector('[name=\"csrf-token\"]').content } }).then(() => window.location.reload());" do %>
+        <i class="fas fa-heart"></i>
+      <% end %>
+    <% else %>
+      <%= link_to favorite_listing_path(listing),
+          class: 'favorite-btn',
+          onclick: "event.preventDefault(); fetch(this.href, { method: 'POST', headers: { 'X-CSRF-Token': document.querySelector('[name=\"csrf-token\"]').content } }).then(() => window.location.reload());" do %>
+        <i class="far fa-heart"></i>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
+<style>
+.favorite-wrapper {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+}
+
+.favorite-btn {
+  background: white;
+  border: none;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  color: #6c757d;
+  transition: all 0.3s;
+  cursor: pointer;
+  text-decoration: none;
+  border: 0;
+  padding: 0;
+}
+
+.favorite-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.favorite-btn.active {
+  color: #e74c3c;
+}
+</style>

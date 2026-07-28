@@ -1,0 +1,20 @@
+<div class="container-fluid bg-light py-3 mb-4">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <%= link_to root_path do %>
+            <i class="fas fa-home"></i> الرئيسية
+          <% end %>
+        </li>
+        <li class="breadcrumb-item">
+          <%= link_to categories_path do %>التصنيفات<% end %>
+        </li>
+        <li class="breadcrumb-item">
+          <%= link_to @subcategory.category.name_ar, category_path(@subcategory.category) %>
+        </li>
+        <li class="breadcrumb-item active"><%= @subcategory.name_ar %></li>
+      </ol>
+    </nav>
+  </div>
+</div>

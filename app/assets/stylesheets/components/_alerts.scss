@@ -1,0 +1,71 @@
+/* app/assets/stylesheets/components/_alerts.css */
+
+.flash-messages {
+  margin-bottom: 1rem;
+}
+
+.alert {
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-sm);
+  animation: slideInDown 0.5s ease;
+  border-right-width: 4px;
+  border-right-style: solid;
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.alert-success {
+  background: linear-gradient(135deg, rgba(0, 122, 61, 0.1), rgba(0, 122, 61, 0.05));
+  color: var(--primary-green);
+  border-right-color: var(--primary-green);
+}
+
+.alert-danger {
+  background: linear-gradient(135deg, rgba(206, 17, 38, 0.1), rgba(206, 17, 38, 0.05));
+  color: var(--primary-red);
+  border-right-color: var(--primary-red);
+}
+
+.alert-warning {
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
+  color: #856404;
+  border-right-color: #ffc107;
+}
+
+.alert-info {
+  background: linear-gradient(135deg, rgba(23, 162, 184, 0.1), rgba(23, 162, 184, 0.05));
+  color: #0c5460;
+  border-right-color: #17a2b8;
+}
+
+.alert .success-icon {
+  color: var(--primary-green);
+}
+
+.alert .danger-icon {
+  color: var(--primary-red);
+}
+
+.alert .btn-close {
+  filter: brightness(0) invert(0.5);
+}
+
+.alert-success .btn-close {
+  filter: brightness(0) invert(0.3) sepia(1) hue-rotate(90deg);
+}
+
+.alert-danger .btn-close {
+  filter: brightness(0) invert(0.3) sepia(1) hue-rotate(320deg);
+}

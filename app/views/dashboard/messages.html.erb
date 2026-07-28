@@ -1,0 +1,172 @@
+<div class="page-header">
+  <h1 class="page-title">الرسائل</h1>
+  <p class="page-description">جميع محادثاتك ورسائلك</p>
+</div>
+
+<% if @conversations.present? %>
+  <!-- Conversations Stats -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="stats-mini-card">
+        <div class="stats-mini-icon bg-red">
+          <i class="fas fa-comments"></i>
+        </div>
+        <div class="stats-mini-content">
+          <span class="stats-mini-value"><%= @conversations.total_count %></span>
+          <span class="stats-mini-label">إجمالي المحادثات</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="stats-mini-card">
+        <div class="stats-mini-icon bg-green">
+          <i class="fas fa-envelope"></i>
+        </div>
+        <div class="stats-mini-content">
+          <span class="stats-mini-value"><%= @conversations.sum { |c| c.messages.where(read: false).where.not(user_id: current_user.id).count } %></span>
+          <span class="stats-mini-label">رسائل غير مقروءة</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="stats-mini-card">
+        <div class="stats-mini-icon" style="background: #f39c12;">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="stats-mini-content">
+          <span class="stats-mini-value"><%= @conversations.map { |c| c.other_user(current_user) }.uniq.count %></span>
+          <span class="stats-mini-label">جهات الاتصال</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conversations List -->
+  <div class="card dashboard-card">
+    <div class="card-header dashboard-card-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <i class="fas fa-comment-dots ms-2"></i>
+          المحادثات
+        </h5>
+        <span class="badge badge-red"><%= @conversations.total_count %></span>
+      </div>
+    </div>
+
+    <div class="card-body p-0">
+      <div class="conversations-list">
+        <% @conversations.each do |conv| %>
+          <% other = conv.other_user(current_user) %>
+          <% unread_count = conv.messages.where(read: false).where.not(user_id: current_user.id).count %>
+          <%= link_to conversation_path(conv), class: "conversation-item #{'unread' if unread_count > 0}" do %>
+            <!-- User Avatar -->
+            <div class="conversation-avatar">
+              <% if other.avatar.attached? %>
+                <%= image_tag other.avatar, class: 'avatar-image' %>
+              <% else %>
+                <div class="avatar-placeholder" style="background: <%= cycle('#CE1126', '#007A3D', '#f39c12', '#3498db') %>;">
+                  <%= other.name.first.upcase %>
+                </div>
+              <% end %>
+
+              <!-- Unread Badge -->
+              <% if unread_count > 0 %>
+                <span class="unread-badge"><%= unread_count %></span>
+              <% end %>
+            </div>
+
+            <!-- Conversation Content -->
+            <div class="conversation-content">
+              <div class="conversation-header">
+                <div class="conversation-user">
+                  <strong class="user-name"><%= other.name %></strong>
+                  <% if other.company? %>
+                    <span class="user-badge company-badge">
+                      <i class="fas fa-building"></i>
+                    </span>
+                  <% end %>
+                </div>
+                <div class="conversation-time">
+                  <small class="time-ago">
+                    <i class="far fa-clock ms-1"></i>
+                    <%= time_ago_in_words(conv.updated_at) %>
+                  </small>
+                </div>
+              </div>
+
+              <div class="conversation-listing">
+                <small class="listing-reference">
+                  <i class="fas fa-tag ms-1" style="color: #CE1126;"></i>
+                  <%= conv.listing.title_ar.truncate(30) %>
+                </small>
+              </div>
+
+              <div class="conversation-preview">
+                <% if conv.last_message.present? %>
+                  <p class="message-preview <%= 'unread-message' if unread_count > 0 && conv.last_message.user_id != current_user.id %>">
+                    <% if conv.last_message.user_id == current_user.id %>
+                      <span class="message-sent-indicator">
+                        <i class="fas fa-check-double" style="color: #007A3D;"></i>
+                      </span>
+                    <% end %>
+                    <%= conv.last_message.content.truncate(40) %>
+                  </p>
+                <% else %>
+                  <p class="message-preview text-muted">
+                    <i class="far fa-image ms-1"></i>
+                    لا توجد رسائل سابقة
+                  </p>
+                <% end %>
+              </div>
+            </div>
+
+            <!-- Status Indicators -->
+            <div class="conversation-status">
+              <% if unread_count > 0 %>
+                <span class="status-dot"></span>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <% if @conversations.total_pages > 1 %>
+      <div class="card-footer dashboard-card-footer">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="pagination-info">
+            عرض <%= @conversations.offset_value + 1 %> -
+            <%= @conversations.offset_value + @conversations.count %> من
+            <%= @conversations.total_count %> محادثة
+          </div>
+          <div class="pagination-wrapper">
+            <%= paginate @conversations %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <!-- Empty State -->
+  <div class="empty-state">
+    <div class="empty-state-content">
+      <i class="fas fa-comments empty-icon"></i>
+      <h3 class="empty-title">لا توجد رسائل</h3>
+      <p class="empty-text">عندما تتواصل مع البائعين أو المشترين، ستظهر محادثاتك هنا</p>
+
+      <div class="empty-state-actions">
+        <%= link_to listings_path, class: 'btn btn-primary' do %>
+          <i class="fas fa-search"></i> تصفح الإعلانات
+        <% end %>
+
+        <%= link_to dashboard_listings_path, class: 'btn btn-outline-primary' do %>
+          <i class="fas fa-list"></i> إعلاناتي
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
+

@@ -1,0 +1,25 @@
+<nav aria-label="breadcrumb" class="mb-4">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><%= link_to 'الرئيسية', root_path %></li>
+    <li class="breadcrumb-item"><%= link_to 'المدن', cities_path %></li>
+    <li class="breadcrumb-item active"><%= @city.name_ar %></li>
+  </ol>
+</nav>
+
+<h1 class="mb-4">إعلانات في <%= @city.name_ar %></h1>
+
+<% if @listings.any? %>
+  <div class="row">
+    <%= render partial: 'listings/listing_card', collection: @listings, as: :listing %>
+  </div>
+  <div class="d-flex justify-content-center mt-4">
+    <%= paginate @listings %>
+  </div>
+<% else %>
+  <div class="alert alert-info text-center py-5">
+    <i class="fas fa-info-circle fa-3x mb-3"></i>
+    <h3>لا توجد إعلانات</h3>
+    <p>لا توجد إعلانات في <%= @city.name_ar %> حالياً</p>
+    <%= link_to "أضف إعلانك الأول", new_listing_path, class: "btn btn-primary mt-3" %>
+  </div>
+<% end %>

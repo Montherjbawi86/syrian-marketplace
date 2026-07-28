@@ -1,0 +1,271 @@
+<div class="page-header">
+  <h1 class="page-title">الإعدادات</h1>
+  <p class="page-description">إدارة ملفك الشخصي وتفضيلات الحساب</p>
+</div>
+
+<div class="row">
+  <!-- Profile Settings -->
+  <div class="col-lg-8">
+    <div class="card dashboard-card">
+      <div class="card-header dashboard-card-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">
+            <i class="fas fa-user-circle ms-2" style="color: #CE1126;"></i>
+            الملف الشخصي
+          </h5>
+          <span class="badge badge-red">معلومات أساسية</span>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <%= form_with(model: @user, url: dashboard_update_settings_path, local: true, html: { class: 'settings-form' }) do |f| %>
+
+          <!-- Avatar Upload Section -->
+          <div class="avatar-upload-section mb-4">
+            <div class="d-flex align-items-center">
+              <div class="avatar-preview">
+                <% if @user.avatar.attached? %>
+                  <%= image_tag @user.avatar, class: 'avatar-image' %>
+                <% else %>
+                  <div class="avatar-placeholder">
+                    <%= @user.name.first.upcase %>
+                  </div>
+                <% end %>
+
+                <div class="avatar-upload-overlay">
+                  <i class="fas fa-camera"></i>
+                </div>
+              </div>
+
+              <div class="avatar-upload-info me-3">
+                <h6 class="mb-1">الصورة الشخصية</h6>
+                <p class="text-muted small mb-2">JPG, PNG أو GIF. الحد الأقصى 2MB.</p>
+                <div class="avatar-upload-actions">
+                  <label for="user_avatar" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-upload"></i> تغيير الصورة
+                  </label>
+                  <%= f.file_field :avatar, id: 'user_avatar', class: 'd-none', accept: 'image/*' %>
+                  <% if @user.avatar.attached? %>
+                    <%= link_to '#', class: 'btn btn-sm btn-outline-danger',
+                        data: { confirm: 'هل أنت متأكد من حذف الصورة؟' } do %>
+                      <i class="fas fa-trash"></i> حذف
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- Username -->
+            <div class="col-md-6 mb-3">
+              <%= f.label :username, 'اسم المستخدم', class: 'form-label' %>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-user"></i>
+                </span>
+                <%= f.text_field :username, class: 'form-control', placeholder: 'اسم المستخدم' %>
+              </div>
+              <small class="text-muted">يمكنك استخدام الحروف والأرقام فقط</small>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6 mb-3">
+              <%= f.label :email, 'البريد الإلكتروني', class: 'form-label' %>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-envelope"></i>
+                </span>
+                <%= f.email_field :email, class: 'form-control', placeholder: 'example@domain.com' %>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- Phone -->
+            <div class="col-md-6 mb-3">
+              <%= f.label :phone, 'رقم الهاتف', class: 'form-label' %>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-phone"></i>
+                </span>
+                <%= f.telephone_field :phone, class: 'form-control', placeholder: '09xxxxxxxx' %>
+              </div>
+            </div>
+
+            <!-- City -->
+            <div class="col-md-6 mb-3">
+              <%= f.label :city_id, 'المدينة', class: 'form-label' %>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-city"></i>
+                </span>
+                <%= f.collection_select :city_id, City.active, :id, :name_ar,
+                    { include_blank: '-- اختر المدينة --' },
+                    { class: 'form-select' } %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Account Type -->
+          <div class="row mb-3">
+            <div class="col-12">
+              <label class="form-label">نوع الحساب</label>
+              <div class="account-type-options">
+                <div class="form-check form-check-inline">
+                  <%= f.radio_button :jobseeker, true, class: 'form-check-input' %>
+                  <%= f.label :jobseeker_true, 'باحث عن عمل', class: 'form-check-label' %>
+                </div>
+                <div class="form-check form-check-inline">
+                  <%= f.radio_button :company, true, class: 'form-check-input' %>
+                  <%= f.label :company_true, 'شركة / مؤسسة', class: 'form-check-label' %>
+                </div>
+                <div class="form-check form-check-inline">
+                  <%= f.radio_button :jobseeker, false, class: 'form-check-input' %>
+                  <%= f.radio_button :company, false, class: 'form-check-input' %>
+                  <%= f.label :jobseeker_false, 'مستخدم عادي', class: 'form-check-label' %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bio -->
+          <div class="mb-4">
+            <%= f.label :bio, 'نبذة عني', class: 'form-label' %>
+            <%= f.text_area :bio, rows: 4, class: 'form-control',
+                placeholder: 'اكتب نبذة قصيرة عن نفسك...' %>
+            <small class="text-muted">أقصى طول 500 حرف</small>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="settings-actions">
+            <%= f.submit 'حفظ التغييرات', class: 'btn btn-primary px-4' %>
+            <%= link_to 'إلغاء', dashboard_path, class: 'btn btn-secondary px-4' %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar Settings -->
+  <div class="col-lg-4">
+    <!-- Account Security -->
+    <div class="card dashboard-card mb-4">
+      <div class="card-header dashboard-card-header">
+        <h5 class="mb-0">
+          <i class="fas fa-shield-alt ms-2" style="color: #007A3D;"></i>
+          أمان الحساب
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="security-options">
+          <%= link_to '#', class: 'security-option-item' do %>
+            <div class="security-option-icon">
+              <i class="fas fa-key"></i>
+            </div>
+            <div class="security-option-content">
+              <span class="security-option-title">تغيير كلمة المرور</span>
+              <span class="security-option-description">قم بتحديث كلمة المرور الخاصة بك</span>
+            </div>
+            <i class="fas fa-chevron-left security-option-arrow"></i>
+          <% end %>
+
+          <div class="security-option-item">
+            <div class="security-option-icon">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            <div class="security-option-content">
+              <span class="security-option-title">التحقق بخطوتين</span>
+              <span class="security-option-description">غير مفعل</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox">
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <%= link_to '#', class: 'security-option-item' do %>
+            <div class="security-option-icon">
+              <i class="fas fa-history"></i>
+            </div>
+            <div class="security-option-content">
+              <span class="security-option-title">سجل الجلسات</span>
+              <span class="security-option-description">عرض جميع الأجهزة المتصلة</span>
+            </div>
+            <i class="fas fa-chevron-left security-option-arrow"></i>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Settings -->
+    <div class="card dashboard-card">
+      <div class="card-header dashboard-card-header">
+        <h5 class="mb-0">
+          <i class="fas fa-bell ms-2" style="color: #f39c12;"></i>
+          الإشعارات
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="notification-options">
+          <div class="notification-option-item">
+            <div class="notification-option-content">
+              <span class="notification-option-title">إشعارات الرسائل</span>
+              <span class="notification-option-description">عند استلام رسالة جديدة</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" checked>
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div class="notification-option-item">
+            <div class="notification-option-content">
+              <span class="notification-option-title">إشعارات الإعلانات</span>
+              <span class="notification-option-description">عند تفعيل أو انتهاء إعلان</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" checked>
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div class="notification-option-item">
+            <div class="notification-option-content">
+              <span class="notification-option-title">النشرة البريدية</span>
+              <span class="notification-option-description">أحدث العروض والإعلانات</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox">
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="card dashboard-card mt-4 border-danger">
+      <div class="card-header bg-danger text-white">
+        <h5 class="mb-0">
+          <i class="fas fa-exclamation-triangle ms-2"></i>
+          منطقة الخطر
+        </h5>
+      </div>
+      <div class="card-body">
+        <p class="text-muted small mb-3">هذه الإجراءات لا يمكن التراجع عنها</p>
+
+        <%= link_to '#', class: 'btn btn-outline-danger w-100 mb-2',
+            data: { confirm: 'هل أنت متأكد من حذف حسابك؟' } do %>
+          <i class="fas fa-trash"></i> حذف الحساب
+        <% end %>
+
+        <%= link_to '#', class: 'btn btn-outline-warning w-100',
+            data: { confirm: 'هل أنت متأكد من تعطيل حسابك مؤقتاً؟' } do %>
+          <i class="fas fa-pause-circle"></i> تعطيل الحساب مؤقتاً
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+

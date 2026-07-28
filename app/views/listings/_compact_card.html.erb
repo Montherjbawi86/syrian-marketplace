@@ -1,0 +1,32 @@
+<% listing = local_assigns[:listing] %>
+
+<div class="col-lg-4 col-md-6">
+  <%= link_to listing_path(listing), class: 'text-decoration-none' do %>
+    <div class="card listing-card">
+      <div class="card-body p-0">
+        <!-- Image Section -->
+        <div class="listing-image-section">
+          <% if listing.images.attached? && listing.images.any? %>
+            <%= image_tag listing.images.first, class: 'listing-image' %>
+          <% else %>
+            <div class="no-image">
+              <i class="fas fa-image"></i>
+            </div>
+          <% end %>
+          <span class="listing-type-badge <%= listing.listing_type %>">
+            <%= listing.listing_type_display %>
+          </span>
+        </div>
+
+        <!-- Content Section -->
+        <div class="listing-content-section">
+          <h4 class="listing-card-title"><%= listing.title_ar.truncate(20) %></h4>
+          <div class="listing-card-price"><%= listing.formatted_price %></div>
+          <div class="listing-card-location">
+            <i class="fas fa-map-marker-alt"></i> <%= listing.city&.name_ar || 'غير محدد' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

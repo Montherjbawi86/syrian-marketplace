@@ -1,0 +1,44 @@
+<h1 class="mb-4">إرسال رسالة جديدة</h1>
+
+<div class="row">
+  <div class="col-md-8 mx-auto">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">مراسلة: <%= @listing.user.name %></h5>
+      </div>
+      <div class="card-body">
+        <div class="mb-4 p-3 bg-light rounded">
+          <h6>حول الإعلان:</h6>
+          <p class="mb-1"><strong><%= @listing.title_ar %></strong></p>
+          <p class="text-muted mb-0"><%= @listing.formatted_price %></p>
+        </div>
+
+        <%= form_tag conversations_path(listing_id: @listing.id), method: :post do %>
+          <div class="mb-3">
+            <%= label_tag :message, 'الرسالة', class: 'form-label fw-bold' %>
+            <%= text_area_tag :message, nil, rows: 5, class: 'form-control',
+                placeholder: 'اكتب رسالتك هنا...', required: true,
+                autofocus: true %>
+          </div>
+
+          <div class="text-center">
+            <%= submit_tag 'إرسال', class: 'btn btn-primary btn-lg px-5' %>
+            <%= link_to 'إلغاء', @listing, class: 'btn btn-secondary btn-lg px-5' %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Tips -->
+    <div class="card mt-3">
+      <div class="card-body">
+        <h6><i class="fas fa-lightbulb text-warning"></i> نصائح للمراسلة:</h6>
+        <ul class="mb-0 text-muted">
+          <li>كن واضحاً في طلبك أو استفسارك</li>
+          <li>لا تشارك معلومات شخصية حساسة</li>
+          <li>للاستفسار عن السعر أو التفاصيل، اسأل مباشرة</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

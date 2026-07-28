@@ -1,0 +1,142 @@
+<nav class="navbar navbar-expand-lg fixed-top navbar-flag">
+  <div class="container">
+    <%= link_to root_path, class: 'navbar-brand' do %>
+      <i class="fas fa-store ms-2"></i>
+      <span class="brand-text">السوق السوري</span>
+    <% end %>
+
+    <button class="navbar-toggler toggler-flag" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarMain">
+      <!-- Main Navigation - Shortened -->
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <%= link_to root_path, class: 'nav-link nav-link-flag' do %>
+            <i class="fas fa-home ms-1"></i> الرئيسية
+          <% end %>
+        </li>
+      <li class="nav-item">
+     <%= link_to jobs_path, class: 'nav-link nav-link-flag' do %>
+     <i class="fas fa-briefcase ms-1"></i> وظائف
+     <% end %>
+     </li>
+        <!-- Categories Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle nav-link-flag" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="fas fa-th-large ms-1"></i> الأقسام
+          </a>
+          <ul class="dropdown-menu dropdown-menu-flag">
+            <% Category.active.limit(8).each do |category| %>
+              <li style="text-align: center;">
+                <%= link_to category_path(category), class: 'dropdown-item dropdown-item-flag' do %>
+                  <i class="fas <%= category.icon_class %> ms-2 category-icon"></i>
+                  <%= category.name_ar %>
+                <% end %>
+              </li>
+            <% end %>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <%= link_to categories_path, class: 'dropdown-item dropdown-item-flag all-categories' do %>
+                <i class="fas fa-list ms-2"></i> جميع الأقسام
+              <% end %>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Consolidated Listings Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle nav-link-flag" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="fas fa-tags ms-1"></i> الإعلانات
+          </a>
+          <ul class="dropdown-menu dropdown-menu-flag">
+            <li style="text-align:right;">
+              <%= link_to new_job_path, class: 'dropdown-item dropdown-item-flag' do %>
+                <i class="fas fa-plus-circle ms-2 text-success"></i> إعلان وظيفة
+              <% end %>
+            </li>
+          <!-- Quick Add Button -->
+          <li><hr class="dropdown-divider"></li>
+
+            <%= link_to new_listing_path, class: 'dropdown-item dropdown-item-flag' do%>
+              <i class="fas fa-plus me-1"></i> نشر إعلان منتج
+            <% end %>
+
+            <li><hr class="dropdown-divider"></li>
+            <li style="text-align:right;">
+              <%= link_to for_sale_listings_path, class: 'dropdown-item dropdown-item-flag' do %>
+                <i class="fas fa-tag ms-2 text-primary"></i> للبيع
+              <% end %>
+            </li>
+            <li style="text-align:right;">
+              <%= link_to for_rent_listings_path, class: 'dropdown-item dropdown-item-flag' do %>
+                <i class="fas fa-key ms-2 text-warning"></i> للإيجار
+              <% end %>
+            </li>
+            <li style="text-align:right;">
+              <%= link_to jobs_path, class: 'dropdown-item dropdown-item-flag' do %>
+                <i class="fas fa-briefcase ms-2 text-info"></i> وظائف
+              <% end %>
+            </li>
+            <li style="text-align:right;">
+              <%= link_to wanted_listings_path, class: 'dropdown-item dropdown-item-flag' do %>
+                <i class="fas fa-search ms-2 text-danger"></i> مطلوب
+              <% end %>
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <!-- Search Form -->
+      <%= form_tag search_path, method: :get, class: 'd-flex mx-auto search-form' do %>
+        <div class="input-group search-group">
+          <%= text_field_tag :q, params[:q], class: 'form-control search-input', placeholder: 'ابحث عن...' %>
+          <button class="btn search-btn" type="submit">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      <% end %>
+
+      <!-- User Menu -->
+      <ul class="navbar-nav">
+        <% if user_signed_in? %>
+          <!-- Quick Add Button
+          <li class="nav-item">
+            <%= link_to new_listing_path, class: 'btn btn-new-listing' do %>
+              <i class="fas fa-plus me-1"></i> جديد
+            <% end %>
+          </li> -->
+
+          <!-- User Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle d-flex align-items-center nav-link-flag" href="#" role="button" data-bs-toggle="dropdown">
+              <div class="user-avatar">
+                <i class="fas fa-user-circle"></i>
+              </div>
+              <span class="d-none d-lg-inline"><%= current_user.name.split.first %></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-flag">
+              <li><%= link_to dashboard_path, class: 'dropdown-item dropdown-item-flag' do %><i class="fas fa-tachometer-alt ms-2"></i> لوحة التحكم<% end %></li>
+              <li><%= link_to dashboard_listings_path, class: 'dropdown-item dropdown-item-flag' do %><i class="fas fa-list ms-2"></i> إعلاناتي<% end %></li>
+              <li><%= link_to dashboard_favorites_path, class: 'dropdown-item dropdown-item-flag' do %><i class="fas fa-heart ms-2"></i> المفضلة<% end %></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><%= button_to destroy_user_session_path, method: :delete, class: 'dropdown-item dropdown-item-flag text-danger', form_class: 'd-inline' do %><i class="fas fa-sign-out-alt ms-2"></i> خروج<% end %></li>
+            </ul>
+          </li>
+        <% else %>
+          <li class="nav-item">
+            <%= link_to new_user_session_path, class: 'btn btn-outline-light me-2' do %>
+              <i class="fas fa-sign-in-alt ms-1"></i> دخول
+            <% end %>
+          </li>
+          <li class="nav-item">
+            <%= link_to new_user_registration_path, class: 'btn btn-register' do %>
+              <i class="fas fa-user-plus me-1"></i> تسجيل
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</nav>

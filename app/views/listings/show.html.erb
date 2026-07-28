@@ -1,0 +1,566 @@
+<%# app/views/listings/show.html.erb %>
+<%# Fixed version – images restored, green theme, full functionality %>
+
+<style>
+  /* ===== Listing Show Page - Green Theme ===== */
+  :root {
+    --primary: #2E5C3E;
+    --primary-dark: #1e4030;
+    --primary-light: #e8f3ec;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --transition: all 0.2s ease;
+  }
+
+  body {
+    background: #f8f9fa;
+  }
+
+  /* Container */
+  .listing-show-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  .listing-show-container > div:first-child {
+    flex: 2;
+    min-width: 0;
+  }
+  .listing-show-container > div:last-child {
+    flex: 1;
+    min-width: 280px;
+  }
+
+  /* Image Gallery */
+  .listing-gallery {
+    background: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+  }
+  .main-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 0.75rem;
+    cursor: pointer;
+  }
+  .thumbnail-list {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+  .thumbnail {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: var(--transition);
+    border: 2px solid transparent;
+  }
+  .thumbnail.active {
+    opacity: 1;
+    border-color: var(--primary);
+  }
+  .thumbnail:hover {
+    opacity: 1;
+  }
+
+  /* Listing Details */
+  .listing-details {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+  }
+  .listing-details-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    margin-bottom: 0.75rem;
+  }
+  .listing-details-price {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 1rem;
+  }
+  .listing-details-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid var(--gray-200);
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .meta-item i {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-light);
+    border-radius: 50%;
+    color: var(--primary);
+  }
+  .meta-item-label {
+    font-size: 0.7rem;
+    color: var(--gray-600);
+    text-transform: uppercase;
+  }
+  .meta-item-value {
+    font-weight: 600;
+    color: var(--gray-800);
+  }
+  .listing-description {
+    line-height: 1.7;
+    color: var(--gray-700);
+    margin-top: 1rem;
+  }
+
+  /* Seller Card */
+  .seller-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+    text-align: center;
+  }
+  .seller-avatar i {
+    font-size: 4rem;
+    color: white;
+  }
+  .seller-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+  }
+  .seller-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 1rem 0;
+  }
+  .seller-stat-value {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 1.1rem;
+  }
+  .seller-stat-label {
+    font-size: 0.7rem;
+    color: var(--gray-600);
+  }
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .action-btn {
+    display: block;
+    text-align: center;
+    padding: 0.6rem;
+    border-radius: 2rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+  .action-btn-primary {
+    background-color: var(--primary);
+    color: white;
+  }
+  .action-btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+    color: white;
+  }
+  .action-btn-whatsapp {
+    background-color: #25d366;
+    color: white;
+  }
+  .action-btn-whatsapp:hover {
+    background-color: #1da15a;
+    color: white;
+  }
+  .action-btn-outline {
+    border: 1px solid var(--primary);
+    color: var(--primary);
+  }
+  .action-btn-outline:hover {
+    background-color: var(--primary-light);
+  }
+
+  /* Similar Listings */
+  .similar-listings {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+  }
+  .similar-listings-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-light);
+  }
+  .similar-listing-item {
+    display: flex;
+    gap: 0.75rem;
+    text-decoration: none;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--gray-200);
+    transition: var(--transition);
+  }
+  .similar-listing-item:hover {
+    transform: translateX(4px);
+  }
+  .similar-listing-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    background: var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .similar-listing-info {
+    flex: 1;
+  }
+  .similar-listing-title {
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 0.25rem;
+  }
+  .similar-listing-price {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  /* Modal */
+  .image-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  .image-modal.active {
+    display: flex;
+  }
+  .image-modal img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 0.5rem;
+  }
+  .close-modal {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .listing-show-container {
+      flex-direction: column;
+    }
+    .main-image {
+      height: 250px;
+    }
+    .listing-details-title {
+      font-size: 1.4rem;
+    }
+    .listing-details-price {
+      font-size: 1.5rem;
+    }
+    .thumbnail {
+      width: 60px;
+      height: 60px;
+    }
+  }
+</style>
+
+<div class="listing-show-container">
+  <!-- Main Content Column -->
+  <div>
+    <!-- Image Gallery -->
+    <div class="listing-gallery">
+      <% if @listing.images.attached? && @listing.images.any? %>
+        <div>
+          <%= image_tag @listing.images.first, class: 'main-image', id: 'mainImage' %>
+          <% if @listing.images.count > 1 %>
+            <div class="thumbnail-list">
+              <% @listing.images.each_with_index do |image, index| %>
+                <%= image_tag image, class: "thumbnail #{'active' if index == 0}",
+                    data: { index: index, src: url_for(image) } %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="main-image" style="display: flex; align-items: center; justify-content: center; background: var(--gray-100);">
+          <i class="fas fa-image fa-5x text-muted"></i>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Listing Details -->
+    <div class="listing-details">
+      <h1 class="listing-details-title"><%= @listing.title_ar.presence || @listing.title %></h1>
+      <div class="listing-details-price">
+        <%= @listing.formatted_price %>
+      </div>
+
+      <div class="listing-details-meta">
+        <div class="meta-item">
+          <i class="fas fa-tag"></i>
+          <div>
+            <div class="meta-item-label">نوع الإعلان</div>
+            <div class="meta-item-value"><%= @listing.listing_type_display %></div>
+          </div>
+        </div>
+
+        <div class="meta-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <div>
+            <div class="meta-item-label">المدينة</div>
+            <div class="meta-item-value"><%= @listing.city&.name_ar || 'غير محدد' %></div>
+          </div>
+        </div>
+
+        <div class="meta-item">
+          <i class="fas fa-folder"></i>
+          <div>
+            <div class="meta-item-label">القسم</div>
+            <div class="meta-item-value"><%= @listing.category&.name_ar %></div>
+          </div>
+        </div>
+
+        <% if @listing.condition.present? %>
+          <div class="meta-item">
+            <i class="fas fa-star"></i>
+            <div>
+              <div class="meta-item-label">الحالة</div>
+              <div class="meta-item-value"><%= @listing.condition.humanize %></div>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="meta-item">
+          <i class="fas fa-eye"></i>
+          <div>
+            <div class="meta-item-label">عدد المشاهدات</div>
+            <div class="meta-item-value"><%= @listing.views_count || 0 %></div>
+          </div>
+        </div>
+
+        <div class="meta-item">
+          <i class="far fa-clock"></i>
+          <div>
+            <div class="meta-item-label">تاريخ النشر</div>
+            <div class="meta-item-value"><%= @listing.created_at.strftime('%d %B %Y') %></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="listing-description">
+        <%= simple_format(@listing.description_ar.presence || @listing.description) %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar Column -->
+  <div>
+    <!-- Seller Card -->
+    <div class="seller-card">
+      <div class="seller-avatar">
+        <i class="fas fa-user-circle"></i>
+      </div>
+      <h3 class="seller-name"><%= @listing.user.name %></h3>
+
+      <div class="seller-stats">
+        <div class="seller-stat">
+          <div class="seller-stat-value"><%= @listing.user.listings.count %></div>
+          <div class="seller-stat-label">إعلانات</div>
+        </div>
+        <div class="seller-stat">
+          <div class="seller-stat-value"><%= @listing.user.average_rating || 0 %></div>
+          <div class="seller-stat-label">تقييم</div>
+        </div>
+        <div class="seller-stat">
+          <div class="seller-stat-value"><%= time_ago_in_words(@listing.user.created_at) %></div>
+          <div class="seller-stat-label">عضوية</div>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <% if user_signed_in? && current_user == @listing.user %>
+          <%= link_to edit_listing_path(@listing), class: 'action-btn action-btn-primary' do %>
+            <i class="fas fa-edit"></i> تعديل الإعلان
+          <% end %>
+          <%= link_to @listing, method: :delete, data: { confirm: 'هل أنت متأكد؟' }, class: 'action-btn action-btn-outline' do %>
+            <i class="fas fa-trash"></i> حذف الإعلان
+          <% end %>
+        <% else %>
+          <%= link_to new_conversation_path(listing_id: @listing.id), class: 'action-btn action-btn-primary' do %>
+            <i class="fas fa-envelope"></i> إرسال رسالة
+          <% end %>
+
+          <% if @listing.whatsapp_contact? && @listing.user.phone.present? %>
+            <a href="https://wa.me/<%= @listing.user.phone.gsub(/\D/, '') %>" target="_blank" class="action-btn action-btn-whatsapp">
+              <i class="fab fa-whatsapp"></i> واتساب
+            </a>
+          <% end %>
+
+          <% if @listing.phone_contact? && @listing.user.phone.present? %>
+            <a href="tel:<%= @listing.user.phone %>" class="action-btn action-btn-outline">
+              <i class="fas fa-phone"></i> <%= @listing.user.phone %>
+            </a>
+          <% end %>
+
+          <% if user_signed_in? %>
+            <% if @listing.favorited_by?(current_user) %>
+              <%= link_to unfavorite_listing_path(@listing), method: :delete, class: 'action-btn action-btn-outline' do %>
+                <i class="fas fa-heart"></i> إزالة من المفضلة
+              <% end %>
+            <% else %>
+              <%= link_to favorite_listing_path(@listing), method: :post, class: 'action-btn action-btn-outline' do %>
+                <i class="far fa-heart"></i> أضف إلى المفضلة
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Similar Listings -->
+    <% if @similar_listings.present? %>
+      <div class="similar-listings">
+        <h4 class="similar-listings-title">إعلانات مشابهة</h4>
+        <% @similar_listings.each do |listing| %>
+          <%= link_to listing_path(listing), class: 'similar-listing-item' do %>
+            <% if listing.images.attached? && listing.images.any? %>
+              <%= image_tag listing.images.first, class: 'similar-listing-image' %>
+            <% else %>
+              <div class="similar-listing-image" style="background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-image text-muted"></i>
+              </div>
+            <% end %>
+            <div class="similar-listing-info">
+              <div class="similar-listing-title"><%= listing.title_ar.truncate(30) %></div>
+              <div class="similar-listing-price"><%= listing.formatted_price %></div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<!-- Modal for full-size image -->
+<div id="imageModal" class="image-modal">
+  <span class="close-modal">&times;</span>
+  <img id="modalImage" src="">
+</div>
+
+<script>
+  // Image gallery with thumbnails and modal
+  document.addEventListener('DOMContentLoaded', function() {
+    const mainImage = document.getElementById('mainImage');
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const closeModal = document.querySelector('.close-modal');
+
+    if (thumbnails.length > 0) {
+      thumbnails.forEach(thumb => {
+        thumb.addEventListener('click', function() {
+          const src = this.dataset.src;
+          mainImage.src = src;
+          thumbnails.forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+    }
+
+    if (mainImage && mainImage.src && !mainImage.src.includes('placeholder')) {
+      mainImage.addEventListener('click', function() {
+        modalImg.src = this.src;
+        modal.classList.add('active');
+      });
+    }
+
+    if (closeModal) {
+      closeModal.addEventListener('click', function() {
+        modal.classList.remove('active');
+      });
+    }
+
+    if (modal) {
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+        }
+      });
+    }
+  });
+
+  // Convert DELETE/POST links to fetch (to preserve CSRF)
+  document.addEventListener('click', function(e) {
+    const link = e.target.closest('a[data-method]');
+    if (!link) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const method = link.dataset.method;
+    const url = link.href;
+    const token = document.querySelector('meta[name="csrf-token"]')?.content;
+
+    fetch(url, {
+      method: method.toUpperCase(),
+      headers: {
+        'X-CSRF-Token': token,
+        'Content-Type': 'application/json'
+      }
+    }).then(response => {
+      if (response.redirected) {
+        window.location.href = response.url;
+      } else {
+        window.location.reload();
+      }
+    });
+  });
+</script>

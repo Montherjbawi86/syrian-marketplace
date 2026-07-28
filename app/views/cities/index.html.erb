@@ -1,0 +1,16 @@
+<h1 class="mb-4">المدن</h1>
+<div class="row">
+  <% @cities.each do |city| %>
+    <div class="col-md-2 col-4 mb-3">
+      <%= link_to city_path(city), class: 'text-decoration-none' do %>
+        <div class="card text-center city-card">
+          <div class="card-body">
+            <i class="fas fa-city fa-2x text-primary mb-2"></i>
+            <h6><%= city.name_ar %></h6>
+            <small class="text-muted"><%= city.listings_count %> إعلان</small>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

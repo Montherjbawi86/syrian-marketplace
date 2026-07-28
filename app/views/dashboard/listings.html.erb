@@ -1,0 +1,230 @@
+<div class="page-header">
+  <h1 class="page-title">إعلاناتي</h1>
+  <p class="page-description">إدارة وتحرير جميع إعلاناتك</p>
+</div>
+
+<!-- Stats Summary -->
+<div class="row g-3 mb-4">
+  <div class="col-md-3 col-6">
+    <div class="stats-mini-card">
+      <div class="stats-mini-icon bg-red">
+        <i class="fas fa-chart-line"></i>
+      </div>
+      <div class="stats-mini-content">
+        <span class="stats-mini-value"><%= @listings.total_count %></span>
+        <span class="stats-mini-label">إجمالي الإعلانات</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 col-6">
+    <div class="stats-mini-card">
+      <div class="stats-mini-icon bg-green">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="stats-mini-content">
+        <span class="stats-mini-value"><%= @listings.select(&:active?).count %></span>
+        <span class="stats-mini-label">نشط</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 col-6">
+    <div class="stats-mini-card">
+      <div class="stats-mini-icon" style="background: #f39c12;">
+        <i class="fas fa-eye"></i>
+      </div>
+      <div class="stats-mini-content">
+        <span class="stats-mini-value"><%= @listings.sum(&:views_count) %></span>
+        <span class="stats-mini-label">إجمالي المشاهدات</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 col-6">
+    <div class="stats-mini-card">
+      <div class="stats-mini-icon" style="background: #3498db;">
+        <i class="fas fa-heart"></i>
+      </div>
+      <div class="stats-mini-content">
+        <span class="stats-mini-value"><%= @listings.joins(:favorites).count %></span>
+        <span class="stats-mini-label">إعجابات</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filters and Search -->
+<div class="filters-bar mb-4">
+  <div class="row align-items-center">
+    <div class="col-md-6">
+      <div class="btn-group filter-btn-group" role="group">
+        <%= link_to 'الكل', dashboard_listings_path, class: "btn btn-sm filter-btn #{params[:status].blank? ? 'active' : ''}" %>
+        <%= link_to 'نشط', dashboard_listings_path(status: 'active'), class: "btn btn-sm filter-btn #{params[:status] == 'active' ? 'active' : ''}" %>
+        <%= link_to 'منتهي', dashboard_listings_path(status: 'expired'), class: "btn btn-sm filter-btn #{params[:status] == 'expired' ? 'active' : ''}" %>
+        <%= link_to 'مباع', dashboard_listings_path(status: 'sold'), class: "btn btn-sm filter-btn #{params[:status] == 'sold' ? 'active' : ''}" %>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <%= form_tag dashboard_listings_path, method: :get, class: 'search-form' do %>
+        <div class="input-group search-group">
+          <%= text_field_tag :search, params[:search], class: 'form-control search-input', placeholder: 'ابحث في إعلاناتك...' %>
+          <button class="btn search-btn" type="submit">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Listings Table -->
+<div class="card dashboard-card">
+  <div class="card-header dashboard-card-header">
+    <div class="d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">
+        <i class="fas fa-list ms-2"></i>
+        قائمة الإعلانات
+      </h5>
+      <%= link_to new_listing_path, class: 'btn btn-primary btn-sm' do %>
+        <i class="fas fa-plus"></i> إعلان جديد
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card-body p-0">
+    <% if @listings.present? %>
+      <div class="table-responsive">
+        <table class="table dashboard-table">
+          <thead>
+            <tr>
+              <th>الإعلان</th>
+              <th>السعر</th>
+              <th>الحالة</th>
+              <th>المشاهدات</th>
+              <th>تاريخ النشر</th>
+              <th>الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @listings.each do |listing| %>
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <% if listing.images.attached? && listing.images.any? %>
+                      <%= image_tag listing.images.first, class: 'table-listing-thumbnail' %>
+                    <% else %>
+                      <div class="table-listing-thumbnail-placeholder">
+                        <i class="fas fa-image"></i>
+                      </div>
+                    <% end %>
+                    <div class="me-2">
+                      <%= link_to listing.title_ar.truncate(40), listing_path(listing), class: 'table-listing-title' %>
+                      <small class="d-block text-muted"><%= listing.category&.name_ar %></small>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="listing-price-cell"><%= listing.formatted_price %></span>
+                </td>
+                <td>
+                  <% status_class = case listing.status
+                    when 'active' then 'badge-green'
+                    when 'sold' then 'badge-secondary'
+                    when 'expired' then 'badge-secondary'
+                    else 'badge-secondary'
+                  end %>
+                  <span class="badge <%= status_class %>">
+                    <%= listing.status_display %>
+                  </span>
+                </td>
+                <td>
+                  <div class="views-count">
+                    <i class="fas fa-eye ms-1" style="color: #6c757d;"></i>
+                    <%= listing.views_count || 0 %>
+                  </div>
+                </td>
+                <td>
+                  <small class="text-muted">
+                    <i class="far fa-clock ms-1"></i>
+                    <%= time_ago_in_words(listing.created_at) %>
+                  </small>
+                </td>
+                <td>
+                  <div class="action-buttons-cell">
+                    <!-- Edit Button -->
+                    <%= link_to edit_listing_path(listing), class: 'action-btn-icon btn-edit', title: 'تعديل' do %>
+                      <i class="fas fa-edit"></i>
+                    <% end %>
+
+                    <!-- View Button -->
+                    <%= link_to listing_path(listing), class: 'action-btn-icon btn-view', title: 'عرض' do %>
+                      <i class="fas fa-eye"></i>
+                    <% end %>
+
+                    <!-- Delete Button - Using button_to -->
+                    <%= button_to listing_path(listing),
+                        method: :delete,
+                        class: 'action-btn-icon btn-delete',
+                        title: 'حذف',
+                        form: { style: 'display: inline-block; margin: 0; padding: 0;' },
+                        data: { turbo: false } do %>
+                      <i class="fas fa-trash"></i>
+                    <% end %>
+
+                    <!-- Toggle Status Button -->
+                    <% if listing.active? %>
+                      <%= button_to toggle_status_listing_path(listing),
+                          method: :post,
+                          class: 'action-btn-icon btn-pause',
+                          title: 'إيقاف مؤقت',
+                          form: { style: 'display: inline-block; margin: 0; padding: 0;' },
+                          data: { turbo: false } do %>
+                        <i class="fas fa-pause"></i>
+                      <% end %>
+                    <% else %>
+                      <%= button_to toggle_status_listing_path(listing),
+                          method: :post,
+                          class: 'action-btn-icon btn-play',
+                          title: 'تفعيل',
+                          form: { style: 'display: inline-block; margin: 0; padding: 0;' },
+                          data: { turbo: false } do %>
+                        <i class="fas fa-play"></i>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="card-footer dashboard-card-footer">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="pagination-info">
+            عرض <%= @listings.offset_value + 1 %> -
+            <%= @listings.offset_value + @listings.count %> من
+            <%= @listings.total_count %> إعلان
+          </div>
+          <div class="pagination-wrapper">
+            <%= paginate @listings %>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <!-- Empty State -->
+      <div class="dashboard-empty-state">
+        <i class="fas fa-box-open fa-4x mb-3"></i>
+        <h5>لا توجد إعلانات</h5>
+        <p class="text-muted mb-4">ابدأ بإضافة أول إعلان لك الآن</p>
+        <%= link_to new_listing_path, class: 'btn btn-primary' do %>
+          <i class="fas fa-plus"></i> أضف إعلان جديد
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+

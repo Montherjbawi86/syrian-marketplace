@@ -1,0 +1,159 @@
+<div class="page-header text-center">
+  <h1 class="page-title">اتصل بنا</h1>
+  <p class="page-description">نحن هنا للإجابة على استفساراتك ومساعدتك</p>
+</div>
+
+<div class="row g-4">
+  <!-- Contact Info -->
+  <div class="col-lg-4">
+    <div class="contact-info-card">
+      <h3 class="h5 mb-4">معلومات الاتصال</h3>
+
+      <div class="contact-item mb-4">
+        <div class="contact-icon bg-red">
+          <i class="fas fa-map-marker-alt"></i>
+        </div>
+        <div>
+          <h4 class="h6 mb-1">العنوان</h4>
+          <p class="text-muted mb-0">دمشق - سوريا<br>شارع البلد - مبنى 123</p>
+        </div>
+      </div>
+
+      <div class="contact-item mb-4">
+        <div class="contact-icon bg-green">
+          <i class="fas fa-phone"></i>
+        </div>
+        <div>
+          <h4 class="h6 mb-1">رقم الهاتف</h4>
+          <p class="text-muted mb-0">+963 11 234 5678</p>
+          <p class="text-muted">+963 11 234 5679</p>
+        </div>
+      </div>
+
+      <div class="contact-item mb-4">
+        <div class="contact-icon" style="background: #f39c12;">
+          <i class="fas fa-envelope"></i>
+        </div>
+        <div>
+          <h4 class="h6 mb-1">البريد الإلكتروني</h4>
+          <p class="text-muted mb-0">info@souq-syrian.com</p>
+          <p class="text-muted">support@souq-syrian.com</p>
+        </div>
+      </div>
+
+      <div class="contact-item mb-4">
+        <div class="contact-icon" style="background: #3498db;">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div>
+          <h4 class="h6 mb-1">ساعات العمل</h4>
+          <p class="text-muted mb-0">السبت - الخميس: 9ص - 6م</p>
+          <p class="text-muted">الجمعة: مغلق</p>
+        </div>
+      </div>
+
+      <!-- Social Media -->
+      <h3 class="h6 mt-4 mb-3">تابعنا على</h3>
+      <div class="social-links">
+        <a href="#" class="social-icon facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social-icon twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="social-icon instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="social-icon whatsapp"><i class="fab fa-whatsapp"></i></a>
+        <a href="#" class="social-icon telegram"><i class="fab fa-telegram-plane"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Form -->
+  <div class="col-lg-8">
+    <div class="card contact-form-card">
+      <div class="card-header">
+        <h3 class="h5 mb-0">أرسل لنا رسالة</h3>
+      </div>
+      <div class="card-body">
+        <%= form_with(url: contact_path, local: true, class: 'contact-form') do |f| %>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="form-group">
+                <%= f.label :name, 'الاسم الكامل', class: 'form-label' %>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-user"></i></span>
+                  <%= f.text_field :name, class: 'form-control', placeholder: 'أدخل اسمك', required: true %>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <%= f.label :email, 'البريد الإلكتروني', class: 'form-label' %>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                  <%= f.email_field :email, class: 'form-control', placeholder: 'example@domain.com', required: true %>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <%= f.label :phone, 'رقم الهاتف', class: 'form-label' %>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                  <%= f.telephone_field :phone, class: 'form-control', placeholder: '09xxxxxxxx' %>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <%= f.label :subject, 'الموضوع', class: 'form-label' %>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                  <%= f.select :subject,
+                      ['استفسار عام', 'مشكلة في الإعلان', 'مشكلة في الحساب', 'اقتراح', 'شكوى', 'أخرى'],
+                      {}, class: 'form-select' %>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-group">
+                <%= f.label :message, 'الرسالة', class: 'form-label' %>
+                <%= f.text_area :message, rows: 6, class: 'form-control',
+                    placeholder: 'اكتب رسالتك هنا...', required: true %>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="privacy_policy" required>
+                <label class="form-check-label" for="privacy_policy">
+                  أوافق على <a href="/privacy" target="_blank">سياسة الخصوصية</a> و <a href="/terms" target="_blank">شروط الاستخدام</a>
+                </label>
+              </div>
+            </div>
+
+            <div class="col-12 text-center">
+              <%= f.submit 'إرسال الرسالة', class: 'btn btn-primary px-5' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Map -->
+<div class="map-section mt-5">
+  <div class="card">
+    <div class="card-body p-0">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d212645.1441488109!2d36.2103912907227!3d33.51115049741626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1518e6dc413cc6a7%3A0x6b9f66ebd1e394f2!2sDamascus%2C%20Syria!5e0!3m2!1sen!2s!4v1710101010101!5m2!1sen!2s"
+        width="100%"
+        height="400"
+        style="border:0; border-radius: 10px;"
+        allowfullscreen=""
+        loading="lazy">
+      </iframe>
+    </div>
+  </div>
+</div>

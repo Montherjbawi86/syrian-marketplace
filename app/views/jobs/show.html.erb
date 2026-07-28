@@ -1,0 +1,789 @@
+<%# app/views/jobs/show.html.erb %>
+<%# Green theme + blue message button – fully responsive %>
+
+<style>
+  /* ===== Job Show Page Styles ===== */
+  :root {
+    --primary-green: #2E5C3E;
+    --primary-dark: #1e4030;
+    --primary-light: #e8f3ec;
+    --message-blue: #3b82f6;
+    --message-blue-dark: #2563eb;
+    --message-blue-light: #dbeafe;
+    --text-dark: #1f2d3d;
+    --text-muted: #6c757d;
+    --border-color: #e5e7eb;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --transition: all 0.2s ease;
+  }
+
+  /* Breadcrumb */
+  .breadcrumb-nav {
+    padding: 0.75rem 0;
+    background: transparent;
+  }
+  .breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap;
+  }
+  .breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    color: var(--text-muted);
+    padding: 0 0.5rem;
+  }
+  .breadcrumb-link {
+    color: var(--primary-green);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .breadcrumb-link:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+  }
+  .breadcrumb-item.active {
+    color: var(--text-muted);
+  }
+
+  /* Two‑column layout */
+  .job-show-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  .job-main {
+    flex: 2;
+    min-width: 0;
+  }
+  .job-sidebar {
+    flex: 1;
+    min-width: 280px;
+  }
+
+  /* Job Header */
+  .job-header {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+  }
+  .job-title-large {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+  }
+  .job-quick-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+  }
+  .job-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #f9fafb;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    color: var(--text-dark);
+    border: 1px solid var(--border-color);
+  }
+  .job-badge i {
+    color: var(--primary-green);
+  }
+
+  /* Job Sections */
+  .job-section {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+  }
+  .job-section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--primary-light);
+    color: var(--text-dark);
+  }
+  .job-section-title i {
+    color: var(--primary-green);
+  }
+  .job-description {
+    line-height: 1.7;
+    color: #4b5563;
+  }
+
+  /* Share Section */
+  .job-share {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+  }
+  .share-label {
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+  .share-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .share-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: white;
+    transition: transform 0.2s;
+    text-decoration: none;
+  }
+  .share-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+    color: white;
+  }
+  .share-btn.facebook { background-color: #1877f2; }
+  .share-btn.twitter { background-color: #1da1f2; }
+  .share-btn.whatsapp { background-color: #25d366; }
+  .share-btn.telegram { background-color: #0088cc; }
+
+  /* Sidebar */
+  .sidebar-section {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+  }
+  .sidebar-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-light);
+    color: var(--text-dark);
+  }
+  .sidebar-title i {
+    color: var(--primary-green);
+  }
+
+  /* Company Info */
+  .company-logo-large {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .company-logo-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid var(--primary-light);
+    padding: 3px;
+  }
+  .company-logo-placeholder {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    background: var(--primary-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--primary-green);
+  }
+  .company-name {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .company-bio {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .company-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 1rem 0;
+    text-align: center;
+  }
+  .company-stat {
+    display: flex;
+    flex-direction: column;
+  }
+  .stat-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-green);
+  }
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* Apply & Message Buttons */
+  .apply-section {
+    background: linear-gradient(135deg, var(--primary-light) 0%, white 100%);
+    border: 1px solid var(--primary-green);
+  }
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .btn-apply {
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
+    color: white;
+    border-radius: 2rem;
+    padding: 0.6rem;
+    font-weight: 600;
+    transition: var(--transition);
+    text-align: center;
+    display: block;
+    text-decoration: none;
+  }
+  .btn-apply:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+    color: white;
+  }
+  .btn-message {
+    background-color: var(--message-blue);
+    border-color: var(--message-blue);
+    color: white;
+    border-radius: 2rem;
+    padding: 0.6rem;
+    font-weight: 600;
+    transition: var(--transition);
+    text-align: center;
+    display: block;
+    text-decoration: none;
+  }
+  .btn-message:hover {
+    background-color: var(--message-blue-dark);
+    transform: translateY(-1px);
+    color: white;
+  }
+  .btn-outline-primary {
+    color: var(--primary-green);
+    border-color: var(--primary-green);
+    background: transparent;
+    border-radius: 2rem;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    transition: var(--transition);
+  }
+  .btn-outline-primary:hover {
+    background-color: var(--primary-green);
+    color: white;
+  }
+  .alert {
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Job Details List */
+  .job-details-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .job-details-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .job-details-list li:last-child {
+    border-bottom: none;
+  }
+  .job-details-list i {
+    width: 1.5rem;
+    color: var(--primary-green);
+    font-size: 1.1rem;
+  }
+  .job-details-list div {
+    flex: 1;
+  }
+  .detail-label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  .detail-value {
+    display: block;
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+
+  /* Report Link */
+  .report-link {
+    color: #dc2626;
+    font-size: 0.875rem;
+    text-decoration: none;
+  }
+  .report-link:hover {
+    text-decoration: underline;
+    color: #b91c1c;
+  }
+
+  /* Similar Jobs */
+  .similar-jobs-section {
+    margin-top: 3rem;
+  }
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--text-dark);
+  }
+  .section-title i {
+    color: var(--primary-green);
+  }
+  .similar-job-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    padding: 1rem;
+    transition: all 0.2s;
+    height: 100%;
+  }
+  .similar-job-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-green);
+  }
+  .similar-job-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.75rem;
+  }
+  .similar-job-meta {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+  .similar-job-meta i {
+    margin-left: 0.25rem;
+  }
+  .similar-job-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border-color);
+    padding-top: 0.75rem;
+  }
+  .similar-job-price {
+    font-weight: 700;
+    color: var(--primary-green);
+  }
+  .view-link {
+    font-size: 0.8rem;
+    color: var(--primary-green);
+    font-weight: 500;
+  }
+  .view-link i {
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+  }
+  .view-link:hover i {
+    transform: translateX(-3px);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .job-show-container {
+      flex-direction: column;
+    }
+    .job-title-large {
+      font-size: 1.5rem;
+    }
+    .job-quick-info {
+      gap: 0.5rem;
+    }
+    .job-badge {
+      padding: 0.3rem 0.75rem;
+      font-size: 0.75rem;
+    }
+  }
+
+  @media print {
+    .job-sidebar, .job-share, .similar-jobs-section, .breadcrumb-nav {
+      display: none;
+    }
+    .job-main {
+      width: 100%;
+    }
+    .job-show-container {
+      display: block;
+    }
+  }
+</style>
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="breadcrumb-nav mb-4">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><%= link_to 'الرئيسية', root_path, class: 'breadcrumb-link' %></li>
+    <li class="breadcrumb-item"><%= link_to 'الوظائف', jobs_path, class: 'breadcrumb-link' %></li>
+    <li class="breadcrumb-item"><%= link_to @job.category.name_ar, jobs_listings_path(category_id: @job.category_id), class: 'breadcrumb-link' %></li>
+    <% if @job.subcategory %>
+      <li class="breadcrumb-item"><%= link_to @job.subcategory.name_ar, jobs_listings_path(subcategory_id: @job.subcategory_id), class: 'breadcrumb-link' %></li>
+    <% end %>
+    <li class="breadcrumb-item active" aria-current="page"><%= @job.title_ar.truncate(30) %></li>
+  </ol>
+</nav>
+
+<!-- Job Show Container -->
+<div class="job-show-container">
+  <!-- Main Content Column -->
+  <div class="job-main">
+    <!-- Job Header -->
+    <div class="job-header mb-4">
+      <h1 class="job-title-large"><%= @job.title_ar %></h1>
+
+      <div class="job-quick-info mt-3">
+        <span class="job-badge company-badge">
+          <i class="fas fa-building"></i> <%= @job.user.name %>
+        </span>
+        <span class="job-badge location-badge">
+          <i class="fas fa-map-marker-alt"></i> <%= @job.city&.name_ar || 'غير محدد' %>
+        </span>
+        <span class="job-badge salary-badge">
+          <i class="fas fa-money-bill"></i> <%= @job.formatted_price %>
+        </span>
+        <span class="job-badge time-badge">
+          <i class="far fa-clock"></i> <%= time_ago_in_words(@job.created_at) %>
+        </span>
+      </div>
+    </div>
+
+    <!-- Job Description -->
+    <div class="job-section mb-4">
+      <h2 class="job-section-title">
+        <i class="fas fa-file-alt ms-2"></i>
+        وصف الوظيفة
+      </h2>
+      <div class="job-description">
+        <%= simple_format @job.description_ar %>
+      </div>
+    </div>
+
+    <!-- Requirements (if present) -->
+    <% if @job.requirements.present? %>
+      <div class="job-section mb-4">
+        <h2 class="job-section-title">
+          <i class="fas fa-tasks ms-2"></i>
+          المتطلبات
+        </h2>
+        <div class="job-description">
+          <%= simple_format @job.requirements %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Skills (if present) -->
+    <% if @job.skills.present? %>
+      <div class="job-section mb-4">
+        <h2 class="job-section-title">
+          <i class="fas fa-code ms-2"></i>
+          المهارات المطلوبة
+        </h2>
+        <div class="d-flex flex-wrap gap-2">
+          <% @job.skills.split(',').map(&:strip).each do |skill| %>
+            <span class="badge bg-light text-dark px-3 py-2">
+              <i class="fas fa-tag text-success ms-1"></i> <%= skill %>
+            </span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Benefits (if present) -->
+    <% if @job.benefits.present? %>
+      <div class="job-section mb-4">
+        <h2 class="job-section-title">
+          <i class="fas fa-gift ms-2"></i>
+          المميزات
+        </h2>
+        <div class="job-description">
+          <%= simple_format @job.benefits %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Share Job -->
+    <div class="job-share mt-4">
+      <span class="share-label">مشاركة الوظيفة:</span>
+      <div class="share-buttons">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=<%= request.original_url %>" target="_blank" class="share-btn facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://twitter.com/intent/tweet?url=<%= request.original_url %>&text=<%= @job.title_ar %>" target="_blank" class="share-btn twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://wa.me/?text=<%= @job.title_ar %> <%= request.original_url %>" target="_blank" class="share-btn whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="https://t.me/share/url?url=<%= request.original_url %>&text=<%= @job.title_ar %>" target="_blank" class="share-btn telegram">
+          <i class="fab fa-telegram-plane"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar Column -->
+  <div class="job-sidebar">
+    <!-- Company Info -->
+    <div class="sidebar-section">
+      <h3 class="sidebar-title">
+        <i class="fas fa-building ms-2"></i>
+        معلومات الشركة
+      </h3>
+
+      <div class="company-info">
+        <div class="company-logo-large">
+          <% if @job.user.avatar.attached? %>
+            <%= image_tag @job.user.avatar, class: 'company-logo-img' %>
+          <% else %>
+            <div class="company-logo-placeholder">
+              <i class="fas fa-building"></i>
+            </div>
+          <% end %>
+        </div>
+
+        <h4 class="company-name"><%= @job.user.name %></h4>
+
+        <% if @job.user.bio.present? %>
+          <p class="company-bio"><%= @job.user.bio.truncate(100) %></p>
+        <% end %>
+
+        <div class="company-stats">
+          <div class="company-stat">
+            <span class="stat-value"><%= @job.user.listings.jobs.active.count %></span>
+            <span class="stat-label">وظائف</span>
+          </div>
+          <div class="company-stat">
+            <span class="stat-value"><%= @job.user.listings.count %></span>
+            <span class="stat-label">إعلانات</span>
+          </div>
+          <div class="company-stat">
+            <span class="stat-value"><%= @job.user.average_rating || '0.0' %></span>
+            <span class="stat-label">تقييم</span>
+          </div>
+        </div>
+
+        <%= link_to jobs_listings_path(user_id: @job.user_id), class: 'btn btn-outline-primary w-100 mt-3' do %>
+          <i class="fas fa-briefcase"></i> جميع وظائف الشركة
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Apply & Message Section -->
+    <div class="sidebar-section apply-section">
+      <h3 class="sidebar-title">
+        <i class="fas fa-paper-plane ms-2"></i>
+        التقديم على الوظيفة
+      </h3>
+
+      <% if user_signed_in? %>
+        <% if current_user.jobseeker? %>
+          <div class="action-buttons">
+            <%= link_to apply_listing_path(@job), class: 'btn-apply' do %>
+              <i class="fas fa-file-alt"></i> تقدم الآن
+            <% end %>
+            <%= link_to new_conversation_path(listing_id: @job.id), class: 'btn-message' do %>
+              <i class="fas fa-envelope"></i> إرسال رسالة إلى الشركة
+            <% end %>
+          </div>
+          <p class="text-muted small text-center mt-3">
+            <i class="fas fa-info-circle"></i> يمكنك التواصل مع الشركة قبل أو بعد التقديم
+          </p>
+        <% else %>
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            يجب أن تكون مسجلاً كباحث عن عمل للتقديم
+          </div>
+          <div class="action-buttons">
+            <%= link_to edit_user_registration_path, class: 'btn-outline-primary w-100 text-center' do %>
+              <i class="fas fa-user-edit"></i> تحديث نوع الحساب
+            <% end %>
+            <%= link_to new_conversation_path(listing_id: @job.id), class: 'btn-message' do %>
+              <i class="fas fa-envelope"></i> إرسال رسالة
+            <% end %>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="alert alert-warning">
+          <i class="fas fa-exclamation-triangle"></i>
+          يرجى تسجيل الدخول للتواصل أو التقديم
+        </div>
+        <div class="action-buttons">
+          <%= link_to new_user_session_path, class: 'btn-apply' do %>
+            <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+          <% end %>
+          <%= link_to new_user_registration_path(jobseeker: true), class: 'btn-outline-primary w-100 text-center' do %>
+            <i class="fas fa-user-plus"></i> إنشاء حساب كباحث عن عمل
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Contact Methods (from form) -->
+    <% if @job.whatsapp_contact || @job.phone_contact || @job.email_contact %>
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">
+          <i class="fas fa-phone-alt ms-2"></i>
+          طرق التواصل
+        </h3>
+        <div class="d-flex flex-column gap-2">
+          <% if @job.whatsapp_contact && @job.user.phone.present? %>
+            <a href="https://wa.me/<%= @job.user.phone.gsub(/\D/, '') %>" target="_blank" class="btn-outline-primary text-center">
+              <i class="fab fa-whatsapp"></i> واتساب
+            </a>
+          <% end %>
+          <% if @job.phone_contact && @job.user.phone.present? %>
+            <a href="tel:<%= @job.user.phone %>" class="btn-outline-primary text-center">
+              <i class="fas fa-phone"></i> اتصال هاتفي
+            </a>
+          <% end %>
+          <% if @job.email_contact && @job.user.email.present? %>
+            <a href="mailto:<%= @job.user.email %>" class="btn-outline-primary text-center">
+              <i class="fas fa-envelope"></i> بريد إلكتروني
+            </a>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Job Details Summary -->
+    <div class="sidebar-section">
+      <h3 class="sidebar-title">
+        <i class="fas fa-info-circle ms-2"></i>
+        تفاصيل الوظيفة
+      </h3>
+
+      <ul class="job-details-list">
+        <li>
+          <i class="fas fa-calendar-alt"></i>
+          <div>
+            <span class="detail-label">تاريخ النشر</span>
+            <span class="detail-value"><%= @job.created_at.strftime('%d %B %Y') %></span>
+          </div>
+        </li>
+
+        <li>
+          <i class="fas fa-briefcase"></i>
+          <div>
+            <span class="detail-label">نوع الوظيفة</span>
+            <span class="detail-value">
+              <% if @job.job_type.present? %>
+                <%= t("job_type.#{@job.job_type}", default: @job.job_type.humanize) %>
+              <% else %>
+                غير محدد
+              <% end %>
+            </span>
+          </div>
+        </li>
+
+        <% if @job.experience_level.present? %>
+          <li>
+            <i class="fas fa-chart-line"></i>
+            <div>
+              <span class="detail-label">مستوى الخبرة</span>
+              <span class="detail-value">
+                <%= t("experience_level.#{@job.experience_level}", default: @job.experience_level.humanize) %>
+              </span>
+            </div>
+          </li>
+        <% end %>
+
+        <% if @job.deadline.present? %>
+          <li>
+            <i class="fas fa-calendar-times"></i>
+            <div>
+              <span class="detail-label">آخر موعد للتقديم</span>
+              <span class="detail-value <%= 'text-danger' if @job.deadline < Date.today %>">
+                <%= @job.deadline.strftime('%d %B %Y') %>
+                <% if @job.deadline < Date.today %>(انتهى)<% end %>
+              </span>
+            </div>
+          </li>
+        <% end %>
+
+        <li>
+          <i class="fas fa-eye"></i>
+          <div>
+            <span class="detail-label">عدد المشاهدات</span>
+            <span class="detail-value"><%= @job.views_count || 0 %></span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Report Job -->
+    <div class="sidebar-section text-center">
+      <%= link_to '#', class: 'report-link' do %>
+        <i class="fas fa-flag"></i> الإبلاغ عن مشكلة
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Similar Jobs -->
+<% if @similar_jobs.present? %>
+  <div class="similar-jobs-section mt-5">
+    <h2 class="section-title">
+      <i class="fas fa-tags ms-2"></i>
+      وظائف مشابهة
+    </h2>
+
+    <div class="row g-4">
+      <% @similar_jobs.each do |similar| %>
+        <div class="col-md-4">
+          <%= link_to job_path(similar), class: 'text-decoration-none' do %>
+            <div class="similar-job-card">
+              <h4 class="similar-job-title"><%= similar.title_ar.truncate(40) %></h4>
+              <div class="similar-job-meta">
+                <span><i class="fas fa-building"></i> <%= similar.user.name %></span>
+                <span><i class="fas fa-map-marker-alt"></i> <%= similar.city&.name_ar || 'غير محدد' %></span>
+              </div>
+              <div class="similar-job-footer">
+                <span class="similar-job-price"><%= similar.formatted_price %></span>
+                <span class="view-link">عرض التفاصيل <i class="fas fa-arrow-left"></i></span>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

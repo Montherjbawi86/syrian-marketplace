@@ -1,0 +1,114 @@
+/* app/assets/stylesheets/components/_buttons.css */
+
+/* Base Button */
+.btn-flag {
+  border-radius: var(--radius-md);
+  padding: 0.6rem 1.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn-flag::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+  z-index: -1;
+}
+
+.btn-flag:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.btn-flag:hover {
+  transform: translateY(-2px);
+}
+
+.btn-flag:active {
+  transform: translateY(0);
+}
+
+/* Button Variants */
+.btn-primary-flag {
+  background: var(--gradient-flag);
+  color: white;
+}
+
+.btn-primary-flag:hover {
+  background: var(--gradient-flag-hover);
+  box-shadow: var(--shadow-red);
+}
+
+.btn-outline-flag {
+  background: transparent;
+  border: 2px solid var(--primary-red);
+  color: var(--primary-red);
+}
+
+.btn-outline-flag:hover {
+  background: var(--gradient-flag);
+  border-color: transparent;
+  color: white;
+}
+
+.btn-success-flag {
+  background: var(--primary-green);
+  color: white;
+}
+
+.btn-success-flag:hover {
+  background: #005a2b;
+}
+
+.btn-danger-flag {
+  background: var(--primary-red);
+  color: white;
+}
+
+.btn-danger-flag:hover {
+  background: #a50d1e;
+}
+
+/* Button Sizes */
+.btn-lg-flag {
+  padding: 0.8rem 2rem;
+  border-radius: var(--radius-lg);
+  font-size: 1.1rem;
+}
+
+.btn-sm-flag {
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+}
+
+/* Block Button */
+.btn-block-flag {
+  width: 100%;
+  display: block;
+}
+
+/* Icon Button */
+.btn-icon-flag {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon-flag i {
+  margin: 0;
+}

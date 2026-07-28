@@ -1,0 +1,121 @@
+/* app/assets/stylesheets/syrian_theme.css */
+/* Syrian Flag Colors - Main Theme Variables */
+
+:root {
+  /* Syrian Flag Colors */
+  --primary-red: #CE1126;
+  --primary-green: #007A3D;
+  --primary-black: #000000;
+  --primary-white: #FFFFFF;
+
+  /* Gradients */
+  --gradient-flag: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-green) 100%);
+  --gradient-flag-hover: linear-gradient(135deg, #a50d1e 0%, #005a2b 100%);
+  --gradient-patriotic: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-black) 50%, var(--primary-green) 100%);
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+  --shadow-md: 0 5px 15px rgba(0,0,0,0.08);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.12);
+  --shadow-red: 0 5px 15px rgba(206, 17, 38, 0.2);
+  --shadow-green: 0 5px 15px rgba(0, 122, 61, 0.2);
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 15px;
+  --radius-xl: 25px;
+  --radius-round: 50px;
+}
+
+/* Base Styles */
+body {
+  font-family: 'Tajawal', 'Cairo', sans-serif;
+  background: linear-gradient(135deg, #f5f8fa 0%, #eef2f5 100%);
+  color: #2c3e50;
+  padding-top: 80px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Loading Overlay */
+#loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255,255,255,0.9);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Back to Top Button */
+#back-to-top {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  z-index: 99;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: none;
+  box-shadow: var(--shadow-md);
+  background: var(--gradient-flag);
+  color: white;
+  border: none;
+  transition: all 0.3s;
+}
+
+#back-to-top:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Container */
+.container {
+  max-width: 1400px;
+}
+
+/* Section Header */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  position: relative;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0;
+  font-weight: 800;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 60px;
+  height: 4px;
+  background: var(--gradient-flag);
+  border-radius: var(--radius-round);
+}
+
+.section-icon {
+  margin-left: 0.5rem;
+  background: var(--gradient-flag);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Utilities */
+.text-red { color: var(--primary-red); }
+.text-green { color: var(--primary-green); }
+.bg-red { background: var(--primary-red); }
+.bg-green { background: var(--primary-green); }
+.bg-flag { background: var(--gradient-flag); }
+.text-gradient { background: var(--gradient-flag); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }

@@ -1,0 +1,48 @@
+<div class="container mb-4">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <%= form_tag subcategory_path(@subcategory), method: :get, class: "row g-3" do %>
+        <div class="col-md-2">
+          <%= label_tag :type, "النوع", class: "form-label fw-bold" %>
+          <%= select_tag :type, 
+              options_for_select([['الكل', ''], ['للبيع', 'sell'], ['للإيجار', 'rent'], ['مطلوب', 'wanted'], ['وظيفة', 'job']], params[:type]),
+              class: "form-select" %>
+        </div>
+
+        <div class="col-md-2">
+          <%= label_tag :condition, "الحالة", class: "form-label fw-bold" %>
+          <%= select_tag :condition, 
+              options_for_select([['الكل', '']] + (@conditions || []).map { |c| [condition_text(c), c] }, params[:condition]),
+              class: "form-select" %>
+        </div>
+
+        <div class="col-md-3">
+          <%= label_tag :city_id, "المدينة", class: "form-label fw-bold" %>
+          <%= select_tag :city_id, 
+              options_from_collection_for_select(@cities, :id, :name_ar, params[:city_id], include_blank: 'جميع المدن'),
+              class: "form-select" %>
+        </div>
+
+        <div class="col-md-2">
+          <%= label_tag :min_price, "الحد الأدنى", class: "form-label fw-bold" %>
+          <%= number_field_tag :min_price, params[:min_price], class: "form-control", placeholder: "من" %>
+        </div>
+        
+        <div class="col-md-2">
+          <%= label_tag :max_price, "الحد الأعلى", class: "form-label fw-bold" %>
+          <%= number_field_tag :max_price, params[:max_price], class: "form-control", placeholder: "إلى" %>
+        </div>
+
+        <div class="col-md-1 d-flex align-items-end">
+          <%= submit_tag "فلترة", class: "btn btn-primary w-100" %>
+        </div>
+        
+        <div class="col-12 mt-2">
+          <%= link_to subcategory_path(@subcategory), class: "btn btn-link btn-sm" do %>
+            <i class="fas fa-undo-alt me-1"></i> إلغاء الفلترة
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

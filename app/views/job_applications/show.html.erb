@@ -1,0 +1,16 @@
+<h1 class="mb-4">تم استلام طلبك!</h1>
+
+<div class="alert alert-success">
+  <h4 class="alert-heading">شكراً لتقديمك على الوظيفة!</h4>
+  <p>تم استلام طلبك للوظيفة: <strong><%= @application.listing.title_ar %></strong></p>
+  <hr>
+  <p class="mb-0">يمكنك الآن التواصل مع صاحب العمل عبر واتساب:</p>
+</div>
+
+<div class="text-center mt-4">
+  <a href="<%= @application.whatsapp_apply_url %>" target="_blank" class="btn btn-success btn-lg">
+    <i class="fab fa-whatsapp"></i> تواصل عبر واتساب
+  </a>
+  <%= link_to 'العودة للصفحة الرئيسية', root_path, class: 'btn btn-primary btn-lg' %>
+</div>
+

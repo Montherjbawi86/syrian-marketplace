@@ -1,0 +1,56 @@
+<h1 class="mb-4">التقديم على وظيفة: <%= @listing.title_ar %></h1>
+
+<div class="row">
+  <div class="col-md-8 mx-auto">
+    <div class="card">
+      <div class="card-body">
+        <%= form_with(model: @job_application, url: submit_application_listing_path(@listing), local: true, html: { multipart: true }) do |f| %>
+          <% if @job_application.errors.any? %>
+            <div class="alert alert-danger">
+              <h5>حدثت أخطاء:</h5>
+              <ul>
+                <% @job_application.errors.full_messages.each do |msg| %>
+                  <li><%= msg %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <div class="mb-3">
+            <%= f.label :name, 'الاسم الكامل', class: 'form-label' %>
+            <%= f.text_field :name, class: 'form-control', required: true %>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <%= f.label :email, 'البريد الإلكتروني', class: 'form-label' %>
+              <%= f.email_field :email, class: 'form-control', required: true %>
+            </div>
+            <div class="col-md-6">
+              <%= f.label :phone, 'رقم الهاتف', class: 'form-label' %>
+              <%= f.telephone_field :phone, class: 'form-control', required: true %>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :cover_letter, 'رسالة التقديم', class: 'form-label' %>
+            <%= f.text_area :cover_letter, rows: 6, class: 'form-control', required: true,
+                placeholder: 'اكتب نبذة عن خبراتك ومؤهلاتك...' %>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :cv, 'السيرة الذاتية (CV)', class: 'form-label' %>
+            <%= f.file_field :cv, class: 'form-control', accept: '.pdf,.doc,.docx' %>
+            <small class="text-muted">يمكنك رفع ملف PDF أو Word</small>
+          </div>
+
+          <div class="text-center">
+            <%= f.submit 'تقديم الطلب', class: 'btn btn-success btn-lg px-5' %>
+            <%= link_to 'رجوع', @listing, class: 'btn btn-secondary btn-lg px-5' %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+

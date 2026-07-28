@@ -1,0 +1,17 @@
+<% if flash.any? %>
+  <div class="flash-messages">
+    <% flash.each do |type, message| %>
+      <div class="alert alert-<%= type == 'notice' ? 'success' : 'danger' %> alert-dismissible fade show" role="alert">
+        <div class="d-flex align-items-center">
+          <% if type == 'notice' %>
+            <i class="fas fa-check-circle ms-2 success-icon"></i>
+          <% else %>
+            <i class="fas fa-exclamation-circle ms-2 danger-icon"></i>
+          <% end %>
+          <span><%= message %></span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% end %>
+  </div>
+<% end %>

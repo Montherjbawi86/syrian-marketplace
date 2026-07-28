@@ -1,0 +1,36 @@
+/* app/assets/stylesheets/components/_breadcrumb.css */
+
+.breadcrumb-nav {
+  margin-bottom: 1.5rem;
+}
+
+.breadcrumb {
+  background: white;
+  padding: 0.8rem 1.2rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.breadcrumb-item {
+  font-size: 0.95rem;
+}
+
+.breadcrumb-link {
+  color: var(--primary-red);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.breadcrumb-link:hover {
+  color: var(--primary-green);
+}
+
+.breadcrumb-item.active {
+  color: var(--primary-black);
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  color: var(--primary-green);
+  content: "/";
+}

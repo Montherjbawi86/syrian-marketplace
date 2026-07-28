@@ -1,0 +1,146 @@
+<div class="page-header text-center">
+  <h1 class="page-title">عن الموقع</h1>
+  <p class="page-description">تعرف على السوق السوري - أكبر منصة إلكترونية في سوريا</p>
+</div>
+
+<!-- Hero Section -->
+<div class="about-hero mb-5">
+  <div class="row align-items-center">
+    <div class="col-lg-6">
+      <h2 class="section-title">من نحن؟</h2>
+      <p class="lead">السوق السوري هو منصة إلكترونية رائدة تجمع البائعين والمشترين والباحثين عن عمل في مكان واحد.</p>
+      <p>تأسس السوق السوري عام 2020 بهدف توفير بيئة آمنة وموثوقة للتجارة الإلكترونية والتوظيف في سوريا. نسعى لربط المجتمع السوري ببعضه البعض من خلال منصة سهلة الاستخدام ومتاحة للجميع.</p>
+
+      <div class="stats-grid mt-4">
+        <div class="stat-item">
+          <div class="stat-number"><%= number_to_human(User.count) %>+</div>
+          <div class="stat-label">مستخدم</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number"><%= number_to_human(Listing.count) %>+</div>
+          <div class="stat-label">إعلان</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number"><%= number_to_human(City.count) %></div>
+          <div class="stat-label">مدينة</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number"><%= number_to_human(Category.count) %></div>
+          <div class="stat-label">قسم</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="about-image">
+        <i class="fas fa-store fa-6x text-gradient"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mission & Vision -->
+<div class="row g-4 mb-5">
+  <div class="col-md-6">
+    <div class="card mission-card">
+      <div class="card-body text-center">
+        <div class="icon-wrapper bg-red">
+          <i class="fas fa-bullseye fa-3x text-white"></i>
+        </div>
+        <h3 class="h4 mt-3">رسالتنا</h3>
+        <p class="text-muted">تمكين التجارة الإلكترونية في سوريا وتوفير فرص عمل للجميع من خلال منصة موثوقة وسهلة الاستخدام.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card vision-card">
+      <div class="card-body text-center">
+        <div class="icon-wrapper bg-green">
+          <i class="fas fa-eye fa-3x text-white"></i>
+        </div>
+        <h3 class="h4 mt-3">رؤيتنا</h3>
+        <p class="text-muted">أن نكون الوجهة الأولى للتجارة الإلكترونية والتوظيف في سوريا والمنطقة العربية.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Values -->
+<h2 class="section-title text-center mb-4">قيمنا</h2>
+<div class="row g-4 mb-5">
+  <div class="col-md-3">
+    <div class="value-card">
+      <i class="fas fa-handshake fa-3x mb-3" style="color: #CE1126;"></i>
+      <h4>الثقة</h4>
+      <p class="text-muted">نبني علاقات قائمة على الثقة والشفافية بين المستخدمين</p>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="value-card">
+      <i class="fas fa-shield-alt fa-3x mb-3" style="color: #007A3D;"></i>
+      <h4>الأمان</h4>
+      <p class="text-muted">نوفر بيئة آمنة لجميع المعاملات والبيانات</p>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="value-card">
+      <i class="fas fa-rocket fa-3x mb-3" style="color: #CE1126;"></i>
+      <h4>الابتكار</h4>
+      <p class="text-muted">نطور خدماتنا باستمرار لتلبية احتياجات المستخدمين</p>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="value-card">
+      <i class="fas fa-users fa-3x mb-3" style="color: #007A3D;"></i>
+      <h4>المجتمع</h4>
+      <p class="text-muted">ندعم المجتمع السوري ونعزز التواصل بين أفراده</p>
+    </div>
+  </div>
+</div>
+
+<!-- Team -->
+<h2 class="section-title text-center mb-4">فريقنا</h2>
+<div class="row g-4 mb-5">
+  <div class="col-md-4">
+    <div class="team-card">
+      <div class="team-member-image">
+        <i class="fas fa-user-circle fa-5x" style="color: #CE1126;"></i>
+      </div>
+      <h4>أحمد محمد</h4>
+      <p class="text-muted">المؤسس والمدير التنفيذي</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="team-card">
+      <div class="team-member-image">
+        <i class="fas fa-user-circle fa-5x" style="color: #007A3D;"></i>
+      </div>
+      <h4>سارة خالد</h4>
+      <p class="text-muted">مديرة العمليات</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="team-card">
+      <div class="team-member-image">
+        <i class="fas fa-user-circle fa-5x" style="color: #CE1126;"></i>
+      </div>
+      <h4>محمود علي</h4>
+      <p class="text-muted">مدير التطوير التقني</p>
+    </div>
+  </div>
+</div>
+
+<!-- CTA Section -->
+<div class="cta-section text-center p-5 rounded">
+  <h2 class="text-white mb-3">انضم إلى مجتمعنا اليوم!</h2>
+  <p class="text-white mb-4">ملايين المستخدمين يثقون بنا - كن واحداً منهم</p>
+  <% if user_signed_in? %>
+    <%= link_to new_listing_path, class: 'btn btn-light btn-lg' do %>
+      <i class="fas fa-plus"></i> أضف إعلانك الأول
+    <% end %>
+  <% else %>
+    <%= link_to new_user_registration_path, class: 'btn btn-light btn-lg' do %>
+      <i class="fas fa-user-plus"></i> سجل مجاناً
+    <% end %>
+  <% end %>
+</div>

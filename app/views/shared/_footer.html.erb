@@ -1,0 +1,144 @@
+<footer class="footer mt-5 py-5">
+  <!-- Flag Stripe -->
+  <div class="footer-flag-stripe"></div>
+
+  <!-- Background Pattern -->
+  <div class="footer-pattern"></div>
+
+  <div class="container footer-content">
+    <!-- Main Footer Content -->
+    <div class="row g-4">
+      <!-- About Section -->
+      <div class="col-lg-4 col-md-6">
+        <div class="mb-4">
+          <h5 class="mb-3 footer-brand">
+            <i class="fas fa-store ms-2"></i>
+            <span class="footer-brand-gradient">السوق السوري</span>
+          </h5>
+          <p class="footer-description">
+            أكبر منصة إلكترونية للبيع والشراء والتوظيف في سوريا. نوفر بيئة آمنة وموثوقة لجميع المستخدمين.
+          </p>
+        </div>
+
+        <!-- Social Media Links -->
+        <div class="mb-4">
+          <h6 class="footer-section-title">تابعنا على</h6>
+          <div class="d-flex gap-2 social-links">
+            <a href="#" class="social-icon facebook" target="_blank">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="social-icon twitter" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="social-icon instagram" target="_blank">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="social-icon whatsapp" target="_blank">
+              <i class="fab fa-whatsapp"></i>
+            </a>
+            <a href="#" class="social-icon telegram" target="_blank">
+              <i class="fab fa-telegram-plane"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- App Download -->
+        <div class="app-download">
+          <h6 class="footer-section-title">حمّل التطبيق</h6>
+          <div class="d-flex gap-2">
+            <a href="#" class="app-download-btn">
+              <i class="fab fa-apple ms-2"></i> App Store
+            </a>
+            <a href="#" class="app-download-btn">
+              <i class="fab fa-google-play ms-2"></i> Google Play
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="col-lg-2 col-md-6">
+        <h6 class="footer-section-title">روابط سريعة</h6>
+        <ul class="list-unstyled footer-links">
+          <li><%= link_to about_path, class: 'footer-link' do %><i class="fas fa-info-circle ms-2"></i> عن الموقع<% end %></li>
+          <li><%= link_to contact_path, class: 'footer-link' do %><i class="fas fa-envelope ms-2"></i> اتصل بنا<% end %></li>
+          <li><%= link_to terms_path, class: 'footer-link' do %><i class="fas fa-file-contract ms-2"></i> الشروط<% end %></li>
+          <li><%= link_to privacy_path, class: 'footer-link' do %><i class="fas fa-shield-alt ms-2"></i> الخصوصية<% end %></li>
+          <li><%= link_to how_it_works_path, class: 'footer-link' do %><i class="fas fa-question-circle ms-2"></i> كيف يعمل<% end %></li>
+        </ul>
+      </div>
+
+      <!-- Categories -->
+      <div class="col-lg-3 col-md-6">
+        <h6 class="footer-section-title">الأقسام الرئيسية</h6>
+        <ul class="list-unstyled footer-links">
+          <% Category.active.limit(6).each do |category| %>
+            <li>
+              <%= link_to category_path(category), class: 'footer-link' do %>
+                <i class="fas <%= category.icon_class %> ms-2"></i>
+                <%= category.name_ar %>
+              <% end %>
+            </li>
+          <% end %>
+          <li><%= link_to 'جميع الأقسام', categories_path, class: 'footer-link footer-link-highlight' %></li>
+        </ul>
+      </div>
+
+      <!-- Cities & Contact -->
+      <div class="col-lg-3 col-md-6">
+        <h6 class="footer-section-title">المدن</h6>
+        <ul class="list-unstyled footer-links">
+          <% City.active.limit(5).each do |city| %>
+            <li>
+              <%= link_to city_path(city), class: 'footer-link' do %>
+                <i class="fas fa-city ms-2"></i>
+                <%= city.name_ar %>
+              <% end %>
+            </li>
+          <% end %>
+          <li><%= link_to 'جميع المدن', cities_path, class: 'footer-link footer-link-highlight' %></li>
+        </ul>
+
+        <!-- Contact Info -->
+        <div class="contact-info mt-4">
+          <h6 class="footer-section-title">معلومات الاتصال</h6>
+          <div class="contact-item">
+            <i class="fas fa-phone ms-2 red-icon"></i>
+            <span>+963 11 234 5678</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-envelope ms-2 green-icon"></i>
+            <span>info@souq-syrian.com</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-map-marker-alt ms-2 red-icon"></i>
+            <span>دمشق - سوريا</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div class="footer-bottom">
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div class="copyright">
+              <p class="mb-0">© <%= Time.current.year %> السوق السوري. جميع الحقوق محفوظة.</p>
+            </div>
+            <div class="footer-stats">
+              <span class="footer-stat">
+                <i class="fas fa-users ms-1 red"></i>
+                <%= number_to_human(User.count) %> مستخدم
+              </span>
+              <span class="footer-stat">
+                <i class="fas fa-list ms-1 green"></i>
+                <%= number_to_human(Listing.active.count) %> إعلان
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
