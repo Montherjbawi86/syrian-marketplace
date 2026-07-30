@@ -1,0 +1,153 @@
+/* Full Width Fix for All Screens */
+
+/* Reset margins and padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* Container Override - Full Width */
+.container {
+  max-width: 100% !important;
+  width: 100% !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  margin: 0 auto !important;
+}
+
+.container-fluid {
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Row Override */
+.row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100% !important;
+}
+
+/* Col Override */
+[class*="col-"] {
+  padding-left: 15px !important;
+  padding-right: 15px !important;
+}
+
+/* Navbar Full Width */
+.navbar-flag {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0.8rem 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  border-radius: 0 !important;
+}
+
+.navbar-flag .container,
+.navbar-flag .container-fluid {
+  max-width: 100% !important;
+  width: 100% !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+/* Main Content Full Width */
+main.container,
+main.container-fluid {
+  max-width: 100% !important;
+  width: 100% !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  margin: 0 !important;
+}
+
+/* Footer Full Width */
+.footer {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  padding: 40px 0 !important;
+}
+
+.footer .container,
+.footer .container-fluid {
+  max-width: 100% !important;
+  width: 100% !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+/* Hero/Search Box Full Width */
+.search-box {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 60px 0 !important;
+  border-radius: 0 !important;
+}
+
+.search-box .container,
+.search-box .container-fluid {
+  max-width: 100% !important;
+  width: 100% !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+/* Remove max-width restrictions */
+@media (min-width: 576px) { .container { max-width: 100% !important; } }
+@media (min-width: 768px) { .container { max-width: 100% !important; } }
+@media (min-width: 992px) { .container { max-width: 100% !important; } }
+@media (min-width: 1200px) { .container { max-width: 100% !important; } }
+@media (min-width: 1400px) { .container { max-width: 100% !important; } }
+
+/* Responsive padding */
+@media (max-width: 768px) {
+  .container, .container-fluid,
+  .navbar-flag .container, .navbar-flag .container-fluid,
+  .footer .container, .footer .container-fluid,
+  .search-box .container, .search-box .container-fluid,
+  main.container, main.container-fluid {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+  [class*="col-"] {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .container, .container-fluid,
+  .navbar-flag .container, .navbar-flag .container-fluid,
+  .footer .container, .footer .container-fluid,
+  .search-box .container, .search-box .container-fluid,
+  main.container, main.container-fluid {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+  [class*="col-"] {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+  }
+}
+
+/* Fix for sticky elements */
+.sticky-top, .fixed-top, .fixed-bottom {
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+}

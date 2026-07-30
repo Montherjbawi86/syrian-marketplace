@@ -36,8 +36,10 @@
   </button>
 
   <%= render 'shared/navbar' %>
- <%= yield :head %>
-  <main class="container mt-5 pt-4">
+  <%= yield :head %>
+
+  <!-- Main Content - Full Width -->
+  <main class="container-fluid mt-5 pt-4">
     <!-- Flash Messages -->
     <%= render 'shared/flash_messages' %>
 

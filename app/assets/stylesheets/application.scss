@@ -21,6 +21,7 @@
 @import "components/alerts";
 @import "components/pagination";
 @import "components/breadcrumb";
+@import "components/full_width";
 
 // 5. Pages
 @import "pages/home";
@@ -48,19 +49,9 @@
   background-color: #5a32a3;
 }
 
-.bg-purple {
-  background-color: #6f42c1;
-  color: white;
-}
-
-.bg-purple:hover {
-  background-color: #5a32a3;
-}
-
 /* Listing Show Page */
 .listing-show-container {
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 100%;
   padding: 2rem;
   display: grid;
   grid-template-columns: 2fr 1fr;

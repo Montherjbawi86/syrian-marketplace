@@ -1,12 +1,41 @@
 /* app/assets/stylesheets/components/_navbar.css */
 
-/* Navbar Base */
+/* Navbar Base - Full Width Fix */
 .navbar-flag {
   background: var(--gradient-flag) !important;
   box-shadow: var(--shadow-md);
-  padding: 0.8rem 1rem;
+  padding: 0.8rem 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
 }
 
+/* Override Bootstrap container inside navbar */
+.navbar-flag .container {
+  max-width: 100% !important;
+  width: 100% !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  margin: 0 !important;
+}
+
+/* Fix dropdown position for full width */
+.navbar-flag .dropdown-menu {
+  position: absolute !important;
+}
+
+/* Make sure navbar expands full width on all screens */
+@media (max-width: 991px) {
+  .navbar-flag .container {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+}
+
+/* Brand/Logo */
 .navbar-brand {
   font-weight: 800;
   font-size: 1.8rem;
@@ -61,20 +90,16 @@
   padding: 0.5rem;
   min-width: 200px;
   animation: fadeInDown 0.3s ease;
-
+  text-align: right !important;
 }
 
 .dropdown-item-flag {
   border-radius: var(--radius-sm);
   padding: 0.7rem 1rem;
   transition: all 0.3s;
-  text-align: right;
-
+  text-align: right !important;
 }
-.dropdown-item {
-     text-align: right;
 
-    }
 .dropdown-item-flag i {
   margin-left: 0.5rem;
   width: 45px;
@@ -107,12 +132,14 @@
 /* Search Form */
 .search-form {
   width: 35%;
+  min-width: 200px;
 }
 
 .search-group {
   border-radius: var(--radius-round);
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  width: 100%;
 }
 
 .search-input {
@@ -154,7 +181,7 @@
 
 .btn-new-listing:hover {
   background: whitesmoke;
-  color:green;
+  color: green;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0,122,61,0.4);
 }
@@ -211,6 +238,11 @@
 
 /* Mobile Responsive */
 @media (max-width: 991px) {
+  .navbar-flag .container {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  }
+
   .navbar-collapse {
     background: var(--gradient-flag);
     padding: 1rem;
@@ -218,6 +250,7 @@
     margin-top: 0.5rem;
     max-height: 80vh;
     overflow-y: auto;
+    width: 100%;
   }
 
   .search-form {
@@ -225,7 +258,50 @@
     margin: 0.5rem 0;
   }
 
+  .search-group {
+    width: 100%;
+  }
+
   .dropdown-menu-flag {
     background: rgba(255, 255, 255, 0.95);
+  }
+
+  .navbar-brand {
+    font-size: 1.3rem;
+  }
+}
+
+/* Extra Small Screens */
+@media (max-width: 576px) {
+  .navbar-flag {
+    padding: 0.5rem 0 !important;
+  }
+
+  .navbar-flag .container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .navbar-brand {
+    font-size: 1.1rem;
+  }
+
+  .btn-new-listing {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .nav-link-flag {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .search-input {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.8rem;
+  }
+
+  .search-btn {
+    padding: 0.5rem 0.8rem;
   }
 }
